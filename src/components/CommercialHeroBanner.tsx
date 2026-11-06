@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-  ChevronLeft,
-  ChevronRight,
   MessageCircle,
   Store,
 } from 'lucide-react';
@@ -235,27 +233,6 @@ export const CommercialHeroBanner: React.FC<CommercialHeroBannerProps> = ({
           </div>
 
         </div>
-
-        {/* Navigation Controls (Arrows) */}
-        {activeBanners.length > 1 && (
-          <>
-            <button
-              onClick={handlePrev}
-              className="absolute left-2 sm:left-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center transition-all cursor-pointer z-20 shadow-md backdrop-blur-xs min-h-[36px] min-w-[36px]"
-              aria-label="Banner anterior"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-
-            <button
-              onClick={handleNext}
-              className="absolute right-2 sm:right-3 top-1/2 -translate-y-1/2 w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-black/60 hover:bg-black/85 text-white flex items-center justify-center transition-all cursor-pointer z-20 shadow-md backdrop-blur-xs min-h-[36px] min-w-[36px]"
-              aria-label="Próximo banner"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
-          </>
-        )}
 
         {/* Slide Indicators / Dots */}
         {activeBanners.length > 1 && (

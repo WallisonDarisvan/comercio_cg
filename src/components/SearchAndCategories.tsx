@@ -10,8 +10,6 @@ import {
   Car,
   Hammer,
   Store,
-  ChevronLeft,
-  ChevronRight,
 } from 'lucide-react';
 import { CATEGORIES, NEIGHBORHOODS, Category } from '../data/mockData';
 
@@ -37,13 +35,6 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
   totalResults,
 }) => {
   const carouselRef = useRef<HTMLDivElement>(null);
-
-  const scrollCarousel = (direction: 'left' | 'right') => {
-    if (carouselRef.current) {
-      const scrollAmount = direction === 'left' ? -220 : 220;
-      carouselRef.current.scrollBy({ left: scrollAmount, behavior: 'smooth' });
-    }
-  };
 
   const getCategoryIcon = (iconName: string) => {
     const iconClass = "w-6 h-6 sm:w-7 sm:h-7 transition-transform group-hover:scale-110";
@@ -138,23 +129,6 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
 
         {/* Categories Horizontal Carousel */}
         <div className="relative">
-          {/* Scroll arrow buttons for desktop */}
-          <button
-            onClick={() => scrollCarousel('left')}
-            className="hidden md:flex absolute -left-4 top-8 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md items-center justify-center text-slate-700 hover:text-[#0B3B60] hover:scale-105 transition-all cursor-pointer"
-            aria-label="Rolar categorias para esquerda"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          
-          <button
-            onClick={() => scrollCarousel('right')}
-            className="hidden md:flex absolute -right-4 top-8 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md items-center justify-center text-slate-700 hover:text-[#0B3B60] hover:scale-105 transition-all cursor-pointer"
-            aria-label="Rolar categorias para direita"
-          >
-            <ChevronRight className="w-5 h-5" />
-          </button>
-
           {/* Categories with Prominent Neutral Icons */}
           <div
             ref={carouselRef}
