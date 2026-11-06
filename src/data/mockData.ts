@@ -1,3 +1,28 @@
+export interface StoreService {
+  name: string;
+  description: string;
+  price?: string;
+  image?: string;
+}
+
+export interface StoreTestimonial {
+  name: string;
+  neighborhood?: string;
+  comment: string;
+  rating: number;
+}
+
+export interface StoreFaqItem {
+  question: string;
+  answer: string;
+}
+
+export interface StoreProcessStep {
+  step: number;
+  title: string;
+  description: string;
+}
+
 export interface Store {
   id: string;
   name: string;
@@ -22,6 +47,16 @@ export interface Store {
   website?: string;
   viewsCount?: number;
   whatsappClicks?: number;
+  // Landing Page Sections
+  aboutText?: string;
+  aboutImage?: string;
+  services?: StoreService[];
+  testimonials?: StoreTestimonial[];
+  gallery?: string[];
+  processSteps?: StoreProcessStep[];
+  faq?: StoreFaqItem[];
+  ctaTitle?: string;
+  ctaSubtitle?: string;
 }
 
 export interface TvProgram {

@@ -50,6 +50,15 @@ export async function initDb() {
 
       ALTER TABLE stores ADD COLUMN IF NOT EXISTS views_count INT DEFAULT 0;
       ALTER TABLE stores ADD COLUMN IF NOT EXISTS whatsapp_clicks INT DEFAULT 0;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS about_text TEXT;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS about_image TEXT;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS services JSONB DEFAULT '[]'::jsonb;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS testimonials JSONB DEFAULT '[]'::jsonb;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS gallery JSONB DEFAULT '[]'::jsonb;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS process_steps JSONB DEFAULT '[]'::jsonb;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS faq JSONB DEFAULT '[]'::jsonb;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS cta_title VARCHAR(255);
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS cta_subtitle TEXT;
 
       CREATE TABLE IF NOT EXISTS banners (
         id VARCHAR(100) PRIMARY KEY,

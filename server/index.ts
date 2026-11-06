@@ -65,6 +65,15 @@ app.get('/api/stores', async (req, res) => {
       website: r.website,
       viewsCount: parseInt(r.views_count, 10) || 0,
       whatsappClicks: parseInt(r.whatsapp_clicks, 10) || 0,
+      aboutText: r.about_text,
+      aboutImage: r.about_image,
+      services: r.services || [],
+      testimonials: r.testimonials || [],
+      gallery: r.gallery || [],
+      processSteps: r.process_steps || [],
+      faq: r.faq || [],
+      ctaTitle: r.cta_title,
+      ctaSubtitle: r.cta_subtitle,
     }));
     res.json(mapped);
   } catch (error: any) {
@@ -338,6 +347,15 @@ function mapStore(r: any) {
     website: r.website,
     viewsCount: parseInt(r.views_count, 10) || 0,
     whatsappClicks: parseInt(r.whatsapp_clicks, 10) || 0,
+    aboutText: r.about_text,
+    aboutImage: r.about_image,
+    services: r.services || [],
+    testimonials: r.testimonials || [],
+    gallery: r.gallery || [],
+    processSteps: r.process_steps || [],
+    faq: r.faq || [],
+    ctaTitle: r.cta_title,
+    ctaSubtitle: r.cta_subtitle,
   };
 }
 
@@ -580,8 +598,17 @@ app.put('/api/merchant/my-store', async (req, res) => {
         highlights = COALESCE($13, highlights),
         opening_hours = COALESCE($14, opening_hours),
         website = $15,
+        about_text = COALESCE($16, about_text),
+        about_image = COALESCE($17, about_image),
+        services = COALESCE($18, services),
+        testimonials = COALESCE($19, testimonials),
+        gallery = COALESCE($20, gallery),
+        process_steps = COALESCE($21, process_steps),
+        faq = COALESCE($22, faq),
+        cta_title = COALESCE($23, cta_title),
+        cta_subtitle = COALESCE($24, cta_subtitle),
         updated_at = CURRENT_TIMESTAMP
-      WHERE id = $16
+      WHERE id = $25
     `, [
       s.name,
       s.category,
@@ -598,6 +625,15 @@ app.put('/api/merchant/my-store', async (req, res) => {
       s.highlights ? JSON.stringify(s.highlights) : null,
       s.openingHours,
       s.website !== undefined ? s.website : null,
+      s.aboutText !== undefined ? s.aboutText : null,
+      s.aboutImage !== undefined ? s.aboutImage : null,
+      s.services ? JSON.stringify(s.services) : null,
+      s.testimonials ? JSON.stringify(s.testimonials) : null,
+      s.gallery ? JSON.stringify(s.gallery) : null,
+      s.processSteps ? JSON.stringify(s.processSteps) : null,
+      s.faq ? JSON.stringify(s.faq) : null,
+      s.ctaTitle !== undefined ? s.ctaTitle : null,
+      s.ctaSubtitle !== undefined ? s.ctaSubtitle : null,
       merchant.store_id
     ]);
 
