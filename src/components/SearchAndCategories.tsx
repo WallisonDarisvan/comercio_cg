@@ -65,61 +65,6 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
     }
   };
 
-  const getCategoryTheme = (id: string, isActive: boolean) => {
-    if (isActive) {
-      return {
-        iconBg: 'bg-[#0B3B60] text-white shadow-lg shadow-[#0B3B60]/25 ring-4 ring-[#0B3B60]/20 scale-105',
-        badgeBg: 'bg-[#F26522] text-white ring-2 ring-white',
-        textClass: 'text-[#0B3B60] font-bold',
-      };
-    }
-
-    switch (id) {
-      case 'gastronomia':
-        return {
-          iconBg: 'bg-amber-50 text-amber-600 border border-amber-200/60 hover:bg-amber-100 hover:border-amber-300',
-          badgeBg: 'bg-amber-100 text-amber-800 border border-amber-200',
-          textClass: 'text-slate-700 hover:text-amber-600',
-        };
-      case 'moda':
-        return {
-          iconBg: 'bg-pink-50 text-pink-600 border border-pink-200/60 hover:bg-pink-100 hover:border-pink-300',
-          badgeBg: 'bg-pink-100 text-pink-800 border border-pink-200',
-          textClass: 'text-slate-700 hover:text-pink-600',
-        };
-      case 'tecnologia':
-        return {
-          iconBg: 'bg-cyan-50 text-cyan-600 border border-cyan-200/60 hover:bg-cyan-100 hover:border-cyan-300',
-          badgeBg: 'bg-cyan-100 text-cyan-800 border border-cyan-200',
-          textClass: 'text-slate-700 hover:text-cyan-600',
-        };
-      case 'saude':
-        return {
-          iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-200/60 hover:bg-emerald-100 hover:border-emerald-300',
-          badgeBg: 'bg-emerald-100 text-emerald-800 border border-emerald-200',
-          textClass: 'text-slate-700 hover:text-emerald-600',
-        };
-      case 'automotivo':
-        return {
-          iconBg: 'bg-orange-50 text-orange-600 border border-orange-200/60 hover:bg-orange-100 hover:border-orange-300',
-          badgeBg: 'bg-orange-100 text-orange-800 border border-orange-200',
-          textClass: 'text-slate-700 hover:text-orange-600',
-        };
-      case 'construcao':
-        return {
-          iconBg: 'bg-indigo-50 text-indigo-600 border border-indigo-200/60 hover:bg-indigo-100 hover:border-indigo-300',
-          badgeBg: 'bg-indigo-100 text-indigo-800 border border-indigo-200',
-          textClass: 'text-slate-700 hover:text-indigo-600',
-        };
-      default:
-        return {
-          iconBg: 'bg-blue-50 text-blue-700 border border-blue-200/60 hover:bg-blue-100 hover:border-blue-300',
-          badgeBg: 'bg-blue-100 text-blue-800 border border-blue-200',
-          textClass: 'text-slate-700 hover:text-blue-700',
-        };
-    }
-  };
-
   return (
     <section className="py-6 sm:py-8 bg-white border-b border-slate-200/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -210,39 +155,38 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
             <ChevronRight className="w-5 h-5" />
           </button>
 
-          {/* Categories with Prominent Icons */}
+          {/* Categories with Prominent Neutral Icons */}
           <div
             ref={carouselRef}
             className="flex items-start justify-start sm:justify-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth snap-x snap-proximity"
           >
             {CATEGORIES.map((cat: Category) => {
               const isActive = selectedCategory === cat.id;
-              const theme = getCategoryTheme(cat.id, isActive);
               return (
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory(cat.id)}
                   className="group flex flex-col items-center gap-2 shrink-0 cursor-pointer snap-start active:scale-95 transition-all text-center focus:outline-none w-20 sm:w-24"
                 >
-                  {/* Prominent Icon Box with Badge */}
-                  <div className="relative">
-                    <div
-                      className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-200 ${theme.iconBg}`}
-                    >
-                      {getCategoryIcon(cat.iconName)}
-                    </div>
-                    {/* Badge Counter */}
-                    <span
-                      className={`absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 flex items-center justify-center text-[10px] sm:text-[11px] font-bold rounded-full shadow-xs transition-colors ${theme.badgeBg}`}
-                    >
-                      {cat.count}
-                    </span>
+                  {/* Prominent Neutral Icon Box */}
+                  <div
+                    className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+                      isActive
+                        ? 'bg-[#0B3B60] text-white shadow-md shadow-[#0B3B60]/25 ring-2 ring-[#0B3B60]/20 scale-105'
+                        : 'bg-slate-100/90 text-slate-700 border border-slate-200/80 hover:bg-slate-200/80 hover:text-slate-900 hover:border-slate-300'
+                    }`}
+                  >
+                    {getCategoryIcon(cat.iconName)}
                   </div>
 
                   {/* Category Title */}
                   <div className="flex flex-col items-center min-h-[32px] justify-start">
                     <span
-                      className={`text-[11px] sm:text-xs leading-tight transition-colors line-clamp-2 px-0.5 ${theme.textClass}`}
+                      className={`text-[11px] sm:text-xs leading-tight transition-colors line-clamp-2 px-0.5 ${
+                        isActive
+                          ? 'text-[#0B3B60] font-bold'
+                          : 'text-slate-600 group-hover:text-slate-900 font-medium'
+                      }`}
                     >
                       {cat.name}
                     </span>
