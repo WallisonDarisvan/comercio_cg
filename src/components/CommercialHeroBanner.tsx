@@ -91,8 +91,8 @@ export const CommercialHeroBanner: React.FC<CommercialHeroBannerProps> = ({
     setIsPaused(false);
     if (!touchStartX.current || !touchEndX.current) return;
     const distance = touchStartX.current - touchEndX.current;
-    const isLeftSwipe = distance > 45;
-    const isRightSwipe = distance < -45;
+    const isLeftSwipe = distance > 35;
+    const isRightSwipe = distance < -35;
 
     if (isLeftSwipe) {
       handleNext();
@@ -116,7 +116,7 @@ export const CommercialHeroBanner: React.FC<CommercialHeroBannerProps> = ({
 
   return (
     <section
-      className="w-full bg-[#F8FAFC] pt-2 sm:pt-3 pb-3 sm:pb-4 select-none"
+      className="w-full bg-[#F8FAFC] pt-2 sm:pt-3 pb-3 sm:pb-4 select-none touch-pan-y"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={handleTouchStart}
@@ -125,7 +125,7 @@ export const CommercialHeroBanner: React.FC<CommercialHeroBannerProps> = ({
     >
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         {/* Banner card aligned with site standard container, media filling its container */}
-        <div className="relative w-full h-[350px] sm:h-[350px] lg:h-[360px] rounded-2xl overflow-hidden bg-slate-900 border border-slate-800/80 shadow-lg flex items-stretch">
+        <div className="relative w-full h-[310px] sm:h-[350px] lg:h-[360px] rounded-2xl overflow-hidden bg-slate-900 border border-slate-800/80 shadow-lg flex items-stretch">
         
         {/* MOBILE VIEW (below lg breakpoint): Immersive full-bleed backdrop with dark gradient scrim */}
         <div className="lg:hidden absolute inset-0 w-full h-full z-0 overflow-hidden">

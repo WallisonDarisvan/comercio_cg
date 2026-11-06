@@ -113,16 +113,16 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
           <div
             className={
               viewMode === 'grid'
-                ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-7'
-                : 'flex gap-6 overflow-x-auto no-scrollbar pb-4 pt-1 snap-x'
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-7'
+                : 'flex gap-3 sm:gap-6 overflow-x-auto no-scrollbar pb-4 pt-1 snap-x touch-pan-x overscroll-x-contain'
             }
           >
             {stores.map((store) => (
               <div
                 key={store.id}
                 onClick={() => onSelectStore(store)}
-                className={`bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300 flex flex-col overflow-hidden group cursor-pointer ${
-                  viewMode === 'carousel' ? 'w-[320px] sm:w-[360px] shrink-0 snap-start' : 'w-full'
+                className={`bg-white rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 active:scale-[0.99] transition-all duration-200 flex flex-col overflow-hidden group cursor-pointer ${
+                  viewMode === 'carousel' ? 'w-[290px] sm:w-[360px] shrink-0 snap-start' : 'w-full'
                 }`}
               >
                 {/* Store Cover Image with Badges */}
@@ -207,23 +207,23 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
         )}
 
         {/* Trust banner below Vitrine */}
-        <div className="mt-8 sm:mt-10 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#0B3B60] to-[#145388] text-white flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+        <div className="mt-8 sm:mt-10 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#0B3B60] to-[#145388] text-white flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
               <Tv className="w-5 h-5 text-amber-400" />
             </div>
             <div>
-              <h4 className="font-bold text-sm sm:text-base">
+              <h4 className="font-bold text-sm sm:text-base leading-snug">
                 Compre com a confiança de quem está na televisão aberta
               </h4>
-              <p className="text-xs text-blue-100">
+              <p className="text-xs text-blue-100 mt-0.5">
                 Lojas parceiras com CNPJ ativo, endereço físico em Campina Grande e canais diretos de suporte.
               </p>
             </div>
           </div>
           <button
             onClick={onOpenRegister}
-            className="px-4 py-2.5 rounded-xl bg-white text-[#0B3B60] hover:bg-slate-100 active:scale-95 text-xs font-bold transition-all whitespace-nowrap min-h-[44px] shrink-0"
+            className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white text-[#0B3B60] hover:bg-slate-100 active:scale-95 text-xs font-bold transition-all whitespace-nowrap min-h-[44px] shrink-0 text-center flex items-center justify-center cursor-pointer shadow-xs"
           >
             Quero Anunciar Minha Loja
           </button>

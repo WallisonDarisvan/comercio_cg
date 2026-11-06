@@ -114,29 +114,29 @@ export const StoreWebsiteView: React.FC<StoreWebsiteViewProps> = ({
             </div>
 
             {/* Conversion CTA Group */}
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-3">
               <button
                 onClick={() => handleOpenWhatsapp()}
-                className="py-3 px-5 sm:px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-sm sm:text-base font-extrabold transition-all shadow-lg flex items-center gap-2 cursor-pointer min-h-[48px]"
+                className="w-full sm:w-auto py-3 px-5 sm:px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-sm sm:text-base font-extrabold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
               >
-                <MessageCircle className="w-5 h-5 fill-white" />
+                <MessageCircle className="w-5 h-5 fill-white shrink-0" />
                 <span>Falar no WhatsApp Agora</span>
               </button>
 
               <button
                 onClick={handleOpenMaps}
-                className="py-3 px-4 sm:px-5 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white text-sm font-semibold transition-all border border-white/20 flex items-center gap-2 cursor-pointer min-h-[48px]"
+                className="flex-1 sm:flex-initial py-3 px-4 sm:px-5 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all border border-white/20 flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
               >
-                <Navigation className="w-4 h-4 text-amber-300" />
+                <Navigation className="w-4 h-4 text-amber-300 shrink-0" />
                 <span>Como Chegar</span>
               </button>
 
               <a
                 href={`tel:${store.phone.replace(/[^0-9]/g, '')}`}
-                className="py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white text-sm font-semibold transition-all border border-white/15 flex items-center gap-2 min-h-[48px]"
+                className="flex-1 sm:flex-initial py-3 px-4 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all border border-white/15 flex items-center justify-center gap-2 min-h-[48px]"
               >
-                <Phone className="w-4 h-4" />
-                <span>{store.phone}</span>
+                <Phone className="w-4 h-4 shrink-0" />
+                <span className="truncate">{store.phone}</span>
               </a>
             </div>
 

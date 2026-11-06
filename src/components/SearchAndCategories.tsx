@@ -66,12 +66,12 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
   };
 
   return (
-    <section className="py-6 sm:py-8 bg-white border-b border-slate-200/80">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-4 sm:py-8 bg-white border-b border-slate-200/80">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         
         {/* Search Bar + Neighborhood Select Box */}
-        <div className="max-w-4xl mx-auto mb-4 sm:mb-6">
-          <div className="bg-slate-100/70 p-2 sm:p-2.5 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <div className="max-w-4xl mx-auto mb-3 sm:mb-6">
+          <div className="bg-slate-100/70 p-1.5 sm:p-2.5 rounded-2xl border border-slate-200 shadow-xs flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             
             {/* Search Input */}
             <div className="relative flex-1 flex items-center">
@@ -87,7 +87,7 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
               {searchTerm && (
                 <button
                   onClick={() => onSearchChange('')}
-                  className="absolute right-2.5 p-1 text-slate-400 hover:text-slate-600 rounded-md min-h-[36px] min-w-[36px] flex items-center justify-center cursor-pointer"
+                  className="absolute right-2 p-1 text-slate-400 hover:text-slate-600 rounded-md min-h-[40px] min-w-[40px] flex items-center justify-center cursor-pointer"
                   aria-label="Limpar pesquisa"
                 >
                   <X className="w-4 h-4" />
@@ -128,7 +128,7 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
                   onSelectCategory('all');
                   onSelectNeighborhood('Todos os Bairros');
                 }}
-                className="text-[#F26522] hover:underline font-semibold cursor-pointer"
+                className="text-[#F26522] hover:underline font-semibold cursor-pointer py-1 px-1.5"
               >
                 Limpar filtros
               </button>
@@ -158,7 +158,7 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
           {/* Categories with Prominent Neutral Icons */}
           <div
             ref={carouselRef}
-            className="flex items-start justify-start sm:justify-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth snap-x snap-proximity"
+            className="flex items-start justify-start sm:justify-center gap-2.5 sm:gap-4 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth snap-x snap-proximity touch-pan-x overscroll-x-contain"
           >
             {CATEGORIES.map((cat: Category) => {
               const isActive = selectedCategory === cat.id;
@@ -166,7 +166,7 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory(cat.id)}
-                  className="group flex flex-col items-center gap-2 shrink-0 cursor-pointer snap-start active:scale-95 transition-all text-center focus:outline-none w-20 sm:w-24"
+                  className="group flex flex-col items-center gap-1.5 sm:gap-2 shrink-0 cursor-pointer snap-start active:scale-95 transition-all text-center focus:outline-none w-[74px] sm:w-24"
                 >
                   {/* Prominent Neutral Icon Box */}
                   <div

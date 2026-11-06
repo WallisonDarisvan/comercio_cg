@@ -50,7 +50,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Quick Search Trigger button */}
           <button
             onClick={onFocusSearch}
-            className="flex items-center justify-center gap-1.5 p-2 sm:px-3 sm:py-2 text-xs font-medium text-slate-600 bg-slate-100/90 hover:bg-slate-200/80 active:scale-95 rounded-xl transition-all min-h-[44px] min-w-[44px]"
+            className="flex items-center justify-center gap-1.5 p-2 sm:px-3 sm:py-2 text-xs font-medium text-slate-600 bg-slate-100/90 hover:bg-slate-200/80 active:scale-95 rounded-xl transition-all min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] cursor-pointer"
             title="Buscar comércios em Campina Grande"
             aria-label="Buscar lojas"
           >
@@ -58,10 +58,10 @@ export const Header: React.FC<HeaderProps> = ({
             <span className="hidden sm:inline">Buscar</span>
           </button>
 
-          {/* Admin Area Shortcut Button */}
+          {/* Admin Area Shortcut Button (Available on larger screens, and always inside Hamburger Drawer menu) */}
           <button
             onClick={onOpenAdmin}
-            className="flex items-center gap-1 px-2.5 sm:px-3 py-2 text-xs font-semibold text-slate-600 hover:text-[#0B3B60] bg-slate-100 hover:bg-slate-200/80 active:scale-95 rounded-xl transition-all min-h-[44px] cursor-pointer"
+            className="hidden sm:flex items-center gap-1 px-2.5 sm:px-3 py-2 text-xs font-semibold text-slate-600 hover:text-[#0B3B60] bg-slate-100 hover:bg-slate-200/80 active:scale-95 rounded-xl transition-all min-h-[44px] cursor-pointer"
             title="Área Administrativa do Portal"
           >
             <span className="hidden md:inline">Painel Admin</span>
@@ -71,7 +71,7 @@ export const Header: React.FC<HeaderProps> = ({
           {/* Primary CTA: Register Business / Advertise */}
           <button
             onClick={onOpenRegister}
-            className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-[#F26522] to-[#ff7a3d] hover:brightness-105 active:scale-95 rounded-xl shadow-xs transition-all min-h-[44px] whitespace-nowrap cursor-pointer"
+            className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-[#F26522] to-[#ff7a3d] hover:brightness-105 active:scale-95 rounded-xl shadow-xs transition-all min-h-[40px] sm:min-h-[44px] whitespace-nowrap cursor-pointer"
           >
             <PlusCircle className="w-4 h-4 shrink-0" />
             <span>Anunciar</span>
