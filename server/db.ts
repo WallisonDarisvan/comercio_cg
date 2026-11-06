@@ -59,6 +59,7 @@ export async function initDb() {
       ALTER TABLE stores ADD COLUMN IF NOT EXISTS faq JSONB DEFAULT '[]'::jsonb;
       ALTER TABLE stores ADD COLUMN IF NOT EXISTS cta_title VARCHAR(255);
       ALTER TABLE stores ADD COLUMN IF NOT EXISTS cta_subtitle TEXT;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS visible_sections JSONB DEFAULT '{}'::jsonb;
 
       CREATE TABLE IF NOT EXISTS banners (
         id VARCHAR(100) PRIMARY KEY,

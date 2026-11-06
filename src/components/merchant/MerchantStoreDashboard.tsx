@@ -5,6 +5,7 @@ import {
   AlertCircle,
   Loader2,
   Eye,
+  EyeOff,
   LogOut,
   Store as StoreIcon,
   Save,
@@ -27,6 +28,11 @@ import {
   ShoppingBag,
   Star,
   Users,
+  Sliders,
+  Check,
+  Tag,
+  Award,
+  Zap,
 } from 'lucide-react';
 import {
   CATEGORIES,
@@ -37,6 +43,97 @@ import {
   StoreFaqItem,
 } from '../../data/mockData';
 import { merchantUpdateMyStoreApi, MerchantUser } from '../../services/api';
+
+const AVAILABLE_PAGE_SECTIONS = [
+  {
+    id: 'offer',
+    title: 'Oferta Promocional & Cupom',
+    description: 'Banner de oferta especial com porcentagem e código de cupom com clique para copiar.',
+    icon: Tag,
+    color: 'from-orange-500 to-amber-500',
+    category: 'Vendas & Conversão',
+  },
+  {
+    id: 'about',
+    title: 'Sobre a Empresa / Quem Somos',
+    description: 'História, missão, equipe, foto institucional e anos de atuação em Campina Grande.',
+    icon: FileText,
+    color: 'from-blue-600 to-indigo-600',
+    category: 'Apresentação',
+  },
+  {
+    id: 'benefits',
+    title: 'Diferenciais & Vantagens',
+    description: '4 destaques de autoridade (Localização privilegiada, garantia, atendimento rápido).',
+    icon: Award,
+    color: 'from-amber-500 to-orange-500',
+    category: 'Autoridade',
+  },
+  {
+    id: 'services',
+    title: 'Catálogo de Serviços & Produtos',
+    description: 'Cards com fotos, preços e botão que abre WhatsApp com o nome do produto selecionado.',
+    icon: ShoppingBag,
+    color: 'from-emerald-600 to-teal-600',
+    category: 'Vendas & Conversão',
+  },
+  {
+    id: 'process',
+    title: 'Como Funciona (Passo a Passo)',
+    description: '4 etapas simples explicando como o cliente entra em contato, escolhe e recebe.',
+    icon: Zap,
+    color: 'from-purple-600 to-violet-600',
+    category: 'Experiência do Cliente',
+  },
+  {
+    id: 'testimonials',
+    title: 'Depoimentos de Clientes',
+    description: 'Avaliações com 5 estrelas e comentários de moradores de bairros de Campina Grande.',
+    icon: Star,
+    color: 'from-amber-400 to-yellow-500',
+    category: 'Prova Social',
+  },
+  {
+    id: 'gallery',
+    title: 'Galeria de Fotos',
+    description: 'Grid visual com fotos do espaço físico, vitrine, serviços e produtos.',
+    icon: ImageIcon,
+    color: 'from-pink-500 to-rose-500',
+    category: 'Visual & Portfólio',
+  },
+  {
+    id: 'faq',
+    title: 'FAQ (Dúvidas Frequentes)',
+    description: 'Sanfona expansível com respostas sobre pagamentos (Pix/Cartão), frete e prazos.',
+    icon: HelpCircle,
+    color: 'from-cyan-600 to-blue-600',
+    category: 'Atendimento',
+  },
+  {
+    id: 'cta',
+    title: 'Chamada para Ação (CTA Final)',
+    description: 'Banner imersivo antes do rodapé incentivando fechamento imediato via WhatsApp.',
+    icon: Sparkles,
+    color: 'from-orange-600 to-[#F26522]',
+    category: 'Vendas & Conversão',
+  },
+  {
+    id: 'contact',
+    title: 'Contato, Horários & Google Maps',
+    description: 'Mapa interativo do Google integrado, rotas GPS, endereço físico e horários.',
+    icon: MapPin,
+    color: 'from-red-500 to-rose-600',
+    category: 'Localização',
+  },
+  {
+    id: 'floatingWhatsapp',
+    title: 'Botão Flutuante de WhatsApp',
+    description: 'Botão verde flutuante fixado no canto inferior direito para contato a qualquer momento.',
+    icon: MessageCircle,
+    color: 'from-emerald-500 to-green-600',
+    category: 'Atendimento',
+  },
+];
 
 interface MerchantStoreDashboardProps {
   merchant: MerchantUser;
@@ -56,12 +153,49 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
   onLogout,
 }) => {
   // Active Tab: 'metricas' | 'configuracoes'
-  const [activeTab, setActiveTab] = useState<'metricas' | 'configuracoes'>('metricas');
+  const [activeTab, setActiveTab] = useState<'metricas' | 'configuracoes'>('configuracoes');
 
-  // Active Sub-section in Config: 'geral' | 'sobre' | 'produtos' | 'faq' | 'avaliacoes' | 'galeria'
+  // Active Sub-section in Config: 'secoes' | 'geral' | 'sobre' | 'produtos' | 'faq' | 'avaliacoes' | 'galeria'
   const [activeConfigSection, setActiveConfigSection] = useState<
-    'geral' | 'sobre' | 'produtos' | 'faq' | 'avaliacoes' | 'galeria'
-  >('geral');
+    'secoes' | 'geral' | 'sobre' | 'produtos' | 'faq' | 'avaliacoes' | 'galeria'
+  >('secoes');
+
+  // Section visibility state (exibir ou ocultar qualquer seção)
+  const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>(() => {
+    const initial: Record<string, boolean> = {
+      offer: true,
+      about: true,
+      benefits: true,
+      services: true,
+      process: true,
+      testimonials: true,
+      gallery: true,
+      faq: true,
+      cta: true,
+      contact: true,
+      floatingWhatsapp: true,
+    };
+    return { ...initial, ...(store.visibleSections || {}) };
+  });
+
+  const toggleSectionVisibility = (sectionId: string) => {
+    setVisibleSections((prev) => ({
+      ...prev,
+      [sectionId]: prev[sectionId] === false ? true : false,
+    }));
+  };
+
+  const isSectionVisible = (sectionId: string) => {
+    return visibleSections[sectionId] !== false;
+  };
+
+  const handleSetAllSections = (visible: boolean) => {
+    const updated: Record<string, boolean> = {};
+    AVAILABLE_PAGE_SECTIONS.forEach((s) => {
+      updated[s.id] = visible;
+    });
+    setVisibleSections(updated);
+  };
 
   // Form fields initialized with merchant's own store
   const [name, setName] = useState(store.name || '');
@@ -279,6 +413,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
       faq: faqs,
       testimonials,
       gallery,
+      visibleSections,
     };
 
     try {
@@ -551,6 +686,24 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
             <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 no-scrollbar">
               <button
                 type="button"
+                onClick={() => setActiveConfigSection('secoes')}
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                  activeConfigSection === 'secoes'
+                    ? 'bg-[#0B3B60] text-white shadow-xs'
+                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                }`}
+              >
+                <Sliders className="w-3.5 h-3.5 text-[#F26522]" />
+                <span>Visibilidade das Seções</span>
+                <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                  activeConfigSection === 'secoes' ? 'bg-amber-400 text-slate-900' : 'bg-emerald-100 text-emerald-800'
+                }`}>
+                  {AVAILABLE_PAGE_SECTIONS.filter((s) => isSectionVisible(s.id)).length}/{AVAILABLE_PAGE_SECTIONS.length}
+                </span>
+              </button>
+
+              <button
+                type="button"
                 onClick={() => setActiveConfigSection('geral')}
                 className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
                   activeConfigSection === 'geral'
@@ -627,6 +780,132 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                 <span>6. Galeria de Fotos</span>
               </button>
             </div>
+
+            {/* SEÇÃO 0: GERENCIAMENTO DE VISIBILIDADE DAS SEÇÕES (EXIBIR OU OCULTAR) */}
+            {activeConfigSection === 'secoes' && (
+              <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
+                  <div>
+                    <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
+                      <Sliders className="w-5 h-5 text-[#F26522]" />
+                      <span>Exibir ou Ocultar Seções da Página</span>
+                    </h2>
+                    <p className="text-xs text-slate-500 mt-1 max-w-xl">
+                      Escolha quais seções você quer que apareçam na página oficial da sua loja. Clique em qualquer card ou no botão correspondente para ativar ou desativar.
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-start sm:self-auto">
+                    <button
+                      type="button"
+                      onClick={() => handleSetAllSections(true)}
+                      className="px-3 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-all border border-emerald-200 cursor-pointer"
+                    >
+                      Exibir Todas
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => handleSetAllSections(false)}
+                      className="px-3 py-1.5 text-xs font-bold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-all border border-slate-200 cursor-pointer"
+                    >
+                      Ocultar Todas
+                    </button>
+                  </div>
+                </div>
+
+                {/* Summary Counter */}
+                <div className="flex flex-wrap items-center justify-between gap-2 p-3.5 bg-slate-50 rounded-2xl border border-slate-200/70 text-xs">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                    <span className="font-semibold text-slate-700">
+                      Status da Página:{' '}
+                      <strong className="text-emerald-700">
+                        {AVAILABLE_PAGE_SECTIONS.filter((s) => isSectionVisible(s.id)).length} de {AVAILABLE_PAGE_SECTIONS.length} seções ativas
+                      </strong>
+                    </span>
+                  </div>
+                  <span className="text-slate-500 text-[11px]">
+                    Lembre-se de clicar em <strong>"Salvar Minha Página"</strong> no rodapé após ajustar.
+                  </span>
+                </div>
+
+                {/* Section Toggles Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {AVAILABLE_PAGE_SECTIONS.map((sec) => {
+                    const IconComponent = sec.icon;
+                    const visible = isSectionVisible(sec.id);
+
+                    return (
+                      <div
+                        key={sec.id}
+                        onClick={() => toggleSectionVisibility(sec.id)}
+                        className={`p-4 rounded-2xl border-2 transition-all cursor-pointer flex items-start justify-between gap-4 select-none ${
+                          visible
+                            ? 'bg-white border-emerald-500/40 shadow-xs hover:border-emerald-500'
+                            : 'bg-slate-50/70 border-slate-200 opacity-60 hover:opacity-90'
+                        }`}
+                      >
+                        <div className="flex items-start gap-3 min-w-0">
+                          <div
+                            className={`w-10 h-10 rounded-xl bg-gradient-to-br ${sec.color} text-white flex items-center justify-center shrink-0 shadow-xs mt-0.5`}
+                          >
+                            <IconComponent className="w-5 h-5" />
+                          </div>
+                          <div className="min-w-0">
+                            <div className="flex items-center gap-2 mb-0.5">
+                              <h4 className="text-sm font-bold text-slate-800 truncate">
+                                {sec.title}
+                              </h4>
+                              <span
+                                className={`text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md ${
+                                  visible
+                                    ? 'bg-emerald-100 text-emerald-800'
+                                    : 'bg-slate-200 text-slate-600'
+                                }`}
+                              >
+                                {visible ? 'Exibido' : 'Oculto'}
+                              </span>
+                            </div>
+                            <p className="text-xs text-slate-500 leading-snug line-clamp-2">
+                              {sec.description}
+                            </p>
+                            <span className="inline-block mt-2 text-[10px] text-slate-400 font-semibold">
+                              Categoria: {sec.category}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Toggle Switch Button */}
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            toggleSectionVisibility(sec.id);
+                          }}
+                          className={`shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs ${
+                            visible
+                              ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                              : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                          }`}
+                        >
+                          {visible ? (
+                            <>
+                              <Eye className="w-3.5 h-3.5" />
+                              <span>Ativo</span>
+                            </>
+                          ) : (
+                            <>
+                              <EyeOff className="w-3.5 h-3.5" />
+                              <span>Oculto</span>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* SEÇÃO 1: GERAL & HERO */}
             {activeConfigSection === 'geral' && (
@@ -802,10 +1081,33 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
             {/* SEÇÃO 2: SOBRE / HISTÓRIA */}
             {activeConfigSection === 'sobre' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-5">
-                <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2 pb-3 border-b border-slate-100">
-                  <FileText className="w-5 h-5 text-[#F26522]" />
-                  <span>Seção Sobre / Quem Somos</span>
-                </h2>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-[#F26522]" />
+                    <span>Seção Sobre / Quem Somos</span>
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('about')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('about')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('about') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Seção Exibida na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Seção Oculta na Página</span>
+                      </>
+                    )}
+                  </button>
+                </div>
 
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
@@ -854,11 +1156,32 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
             {/* SEÇÃO 3: SERVIÇOS & PRODUTOS COM WHATSAPP */}
             {activeConfigSection === 'produtos' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                     <ShoppingBag className="w-5 h-5 text-[#F26522]" />
                     <span>Catálogo de Serviços & Produtos ({services.length})</span>
                   </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('services')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('services')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('services') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Seção Exibida na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Seção Oculta na Página</span>
+                      </>
+                    )}
+                  </button>
                 </div>
 
                 {/* Add new service form */}
@@ -945,11 +1268,32 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
             {/* SEÇÃO 4: FAQ (DÚVIDAS FREQUENTES) */}
             {activeConfigSection === 'faq' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                     <HelpCircle className="w-5 h-5 text-[#F26522]" />
                     <span>Perguntas Frequentes (FAQ)</span>
                   </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('faq')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('faq')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('faq') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Seção Exibida na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Seção Oculta na Página</span>
+                      </>
+                    )}
+                  </button>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
@@ -1007,11 +1351,32 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
             {/* SEÇÃO 5: DEPOIMENTOS */}
             {activeConfigSection === 'avaliacoes' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                     <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
                     <span>Depoimentos & Avaliações</span>
                   </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('testimonials')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('testimonials')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('testimonials') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Seção Exibida na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Seção Oculta na Página</span>
+                      </>
+                    )}
+                  </button>
                 </div>
 
                 <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
@@ -1081,11 +1446,32 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
             {/* SEÇÃO 6: GALERIA DE FOTOS */}
             {activeConfigSection === 'galeria' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                     <ImageIcon className="w-5 h-5 text-[#F26522]" />
                     <span>Fotos da Galeria</span>
                   </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('gallery')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('gallery')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('gallery') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Seção Exibida na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Seção Oculta na Página</span>
+                      </>
+                    )}
+                  </button>
                 </div>
 
                 <div className="flex gap-2">

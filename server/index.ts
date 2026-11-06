@@ -74,6 +74,7 @@ app.get('/api/stores', async (req, res) => {
       faq: r.faq || [],
       ctaTitle: r.cta_title,
       ctaSubtitle: r.cta_subtitle,
+      visibleSections: r.visible_sections || {},
     }));
     res.json(mapped);
   } catch (error: any) {
@@ -356,6 +357,7 @@ function mapStore(r: any) {
     faq: r.faq || [],
     ctaTitle: r.cta_title,
     ctaSubtitle: r.cta_subtitle,
+    visibleSections: r.visible_sections || {},
   };
 }
 
@@ -607,8 +609,9 @@ app.put('/api/merchant/my-store', async (req, res) => {
         faq = COALESCE($22, faq),
         cta_title = COALESCE($23, cta_title),
         cta_subtitle = COALESCE($24, cta_subtitle),
+        visible_sections = COALESCE($25, visible_sections),
         updated_at = CURRENT_TIMESTAMP
-      WHERE id = $25
+      WHERE id = $26
     `, [
       s.name,
       s.category,
@@ -634,6 +637,7 @@ app.put('/api/merchant/my-store', async (req, res) => {
       s.faq ? JSON.stringify(s.faq) : null,
       s.ctaTitle !== undefined ? s.ctaTitle : null,
       s.ctaSubtitle !== undefined ? s.ctaSubtitle : null,
+      s.visibleSections ? JSON.stringify(s.visibleSections) : null,
       merchant.store_id
     ]);
 

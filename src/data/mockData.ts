@@ -57,6 +57,7 @@ export interface Store {
   faq?: StoreFaqItem[];
   ctaTitle?: string;
   ctaSubtitle?: string;
+  visibleSections?: Record<string, boolean>;
 }
 
 export interface TvProgram {
