@@ -1,0 +1,6 @@
+{
+  "name": "Comércio Campina | Parceiro TV Borborema",
+  "description": "Portal oficial do comércio de Campina Grande em parceria com a TV Borborema: transmissão ao vivo, vitrine de lojas parceiras e guia comercial.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
