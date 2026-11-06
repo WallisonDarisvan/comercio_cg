@@ -1,18 +1,20 @@
 import React from 'react';
-import { Menu, PlusCircle, Search } from 'lucide-react';
+import { Menu, LogIn, Store } from 'lucide-react';
 
 interface HeaderProps {
   onOpenMenu: () => void;
-  onOpenRegister: () => void;
-  onFocusSearch: () => void;
-  onOpenAdmin: () => void;
+  onOpenMerchantAuth: () => void;
+  isMerchantLoggedIn?: boolean;
+  merchantStoreName?: string;
+  onOpenMerchantDashboard?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   onOpenMenu,
-  onOpenRegister,
-  onFocusSearch,
-  onOpenAdmin,
+  onOpenMerchantAuth,
+  isMerchantLoggedIn = false,
+  merchantStoreName,
+  onOpenMerchantDashboard,
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
@@ -45,37 +47,29 @@ export const Header: React.FC<HeaderProps> = ({
           </a>
         </div>
 
-        {/* Center / Right Controls */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5">
-          {/* Quick Search Trigger button */}
-          <button
-            onClick={onFocusSearch}
-            className="flex items-center justify-center gap-1.5 p-2 sm:px-3 sm:py-2 text-xs font-medium text-slate-600 bg-slate-100/90 hover:bg-slate-200/80 active:scale-95 rounded-xl transition-all min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] cursor-pointer"
-            title="Buscar comércios em Campina Grande"
-            aria-label="Buscar lojas"
-          >
-            <Search className="w-4 h-4 text-slate-600" />
-            <span className="hidden sm:inline">Buscar</span>
-          </button>
-
-          {/* Admin Area Shortcut Button (Available on larger screens, and always inside Hamburger Drawer menu) */}
-          <button
-            onClick={onOpenAdmin}
-            className="hidden sm:flex items-center gap-1 px-2.5 sm:px-3 py-2 text-xs font-semibold text-slate-600 hover:text-[#0B3B60] bg-slate-100 hover:bg-slate-200/80 active:scale-95 rounded-xl transition-all min-h-[44px] cursor-pointer"
-            title="Área Administrativa do Portal"
-          >
-            <span className="hidden md:inline">Painel Admin</span>
-            <span className="md:hidden">Admin</span>
-          </button>
-
-          {/* Primary CTA: Register Business / Advertise */}
-          <button
-            onClick={onOpenRegister}
-            className="flex items-center gap-1.5 px-3 sm:px-3.5 py-2 text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-[#F26522] to-[#ff7a3d] hover:brightness-105 active:scale-95 rounded-xl shadow-xs transition-all min-h-[40px] sm:min-h-[44px] whitespace-nowrap cursor-pointer"
-          >
-            <PlusCircle className="w-4 h-4 shrink-0" />
-            <span>Anunciar</span>
-          </button>
+        {/* Right Control: Login / Painel Exclusivo do Comerciante */}
+        <div className="flex items-center">
+          {isMerchantLoggedIn ? (
+            <button
+              onClick={onOpenMerchantDashboard}
+              className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-[#0B3B60] bg-amber-50 border border-amber-300/80 hover:bg-amber-100 active:scale-95 rounded-xl shadow-xs transition-all min-h-[40px] sm:min-h-[44px] cursor-pointer"
+              title="Abrir o painel exclusivo da minha loja"
+            >
+              <Store className="w-4 h-4 shrink-0 text-[#F26522]" />
+              <span className="truncate max-w-[120px] sm:max-w-[170px]">
+                {merchantStoreName || 'Minha Loja'}
+              </span>
+            </button>
+          ) : (
+            <button
+              onClick={onOpenMerchantAuth}
+              className="flex items-center gap-2 px-3.5 sm:px-4 py-2 text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-[#0B3B60] to-[#124d7c] hover:brightness-110 active:scale-95 rounded-xl shadow-xs transition-all min-h-[40px] sm:min-h-[44px] whitespace-nowrap cursor-pointer"
+              title="Fazer Login ou Cadastrar Loja"
+            >
+              <LogIn className="w-4 h-4 shrink-0 text-amber-300" />
+              <span>Entrar</span>
+            </button>
+          )}
         </div>
 
       </div>

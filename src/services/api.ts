@@ -119,3 +119,118 @@ export async function updateLeadStatusApi(id: string, status: string): Promise<b
   }
 }
 
+// MERCHANT AUTH & STORE API
+export interface MerchantUser {
+  id: string;
+  name: string;
+  email: string;
+  whatsapp: string;
+  storeId: string;
+}
+
+export interface MerchantAuthResponse {
+  success: boolean;
+  token: string;
+  merchant: MerchantUser;
+  store: Store;
+}
+
+export async function merchantRegisterApi(payload: {
+  name: string;
+  email: string;
+  password: string;
+  whatsapp: string;
+  storeName: string;
+  category: string;
+  categoryId: string;
+  neighborhood: string;
+  address?: string;
+}): Promise<{ ok: boolean; data?: MerchantAuthResponse; error?: string }> {
+  try {
+    const res = await fetch(`${BASE_URL}/merchant/register`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      return { ok: false, error: data.error || 'Erro ao registrar comerciante.' };
+    }
+    return { ok: true, data };
+  } catch (err: any) {
+    return { ok: false, error: err.message || 'Falha de conexão com o servidor.' };
+  }
+}
+
+export async function merchantLoginApi(payload: {
+  email: string;
+  password: string;
+}): Promise<{ ok: boolean; data?: MerchantAuthResponse; error?: string }> {
+  try {
+    const res = await fetch(`${BASE_URL}/merchant/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      return { ok: false, error: data.error || 'Credenciais inválidas.' };
+    }
+    return { ok: true, data };
+  } catch (err: any) {
+    return { ok: false, error: err.message || 'Falha de conexão com o servidor.' };
+  }
+}
+
+export async function merchantGetMeApi(token: string): Promise<{ ok: boolean; data?: { merchant: MerchantUser; store: Store }; error?: string }> {
+  try {
+    const res = await fetch(`${BASE_URL}/merchant/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!res.ok) return { ok: false };
+    const data = await res.json();
+    return { ok: true, data };
+  } catch {
+    return { ok: false };
+  }
+}
+
+export async function merchantUpdateMyStoreApi(
+  token: string,
+  storeData: Partial<Store>
+): Promise<{ ok: boolean; store?: Store; error?: string }> {
+  try {
+    const res = await fetch(`${BASE_URL}/merchant/my-store`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(storeData),
+    });
+    const data = await res.json();
+    if (!res.ok) {
+      return { ok: false, error: data.error || 'Erro ao salvar alterações da loja.' };
+    }
+    return { ok: true, store: data.store };
+  } catch (err: any) {
+    return { ok: false, error: err.message || 'Erro de conexão com o servidor.' };
+  }
+}
+
+export async function merchantLogoutApi(token: string): Promise<boolean> {
+  try {
+    const res = await fetch(`${BASE_URL}/merchant/logout`, {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+

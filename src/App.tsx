@@ -15,6 +15,8 @@ import { MerchantRegistrationModal } from './components/MerchantRegistrationModa
 import { DrawerMenu } from './components/DrawerMenu';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { AdminDashboard } from './components/admin/AdminDashboard';
+import { MerchantAuthModal } from './components/merchant/MerchantAuthModal';
+import { MerchantStoreDashboard } from './components/merchant/MerchantStoreDashboard';
 import {
   STORES_DATA,
   Store,
@@ -29,6 +31,9 @@ import {
   fetchLeadsApi,
   updateBannersApi,
   createLeadApi,
+  merchantGetMeApi,
+  merchantLogoutApi,
+  MerchantUser,
 } from './services/api';
 
 export default function App() {
@@ -73,6 +78,26 @@ export default function App() {
   // Admin View State
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
+  // Merchant Authentication & Dashboard States (Exclusivo do Lojista)
+  const [isMerchantAuthOpen, setIsMerchantAuthOpen] = useState(false);
+  const [isMerchantDashboardOpen, setIsMerchantDashboardOpen] = useState(false);
+  const [merchantUser, setMerchantUser] = useState<MerchantUser | null>(() => {
+    try {
+      const saved = localStorage.getItem('comercio_cg_merchant_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [merchantStore, setMerchantStore] = useState<Store | null>(() => {
+    try {
+      const saved = localStorage.getItem('comercio_cg_merchant_store');
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+
   // Search & Filters state
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -114,6 +139,22 @@ export default function App() {
       }
     }
     syncWithApi();
+
+    // Sincroniza sessão do lojista se houver token salvo
+    const token = localStorage.getItem('comercio_cg_merchant_token');
+    if (token) {
+      merchantGetMeApi(token).then((res) => {
+        if (!isMounted) return;
+        if (res.ok && res.data) {
+          setMerchantUser(res.data.merchant);
+          if (res.data.store) {
+            setMerchantStore(res.data.store);
+            localStorage.setItem('comercio_cg_merchant_store', JSON.stringify(res.data.store));
+          }
+        }
+      }).catch(() => {});
+    }
+
     return () => {
       isMounted = false;
     };
@@ -166,6 +207,40 @@ export default function App() {
     const found = stores.find((s) => s.id === storeId);
     if (found) {
       setSelectedStore(found);
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+  };
+
+  // Merchant Actions (Exclusivo da Loja do Comerciante)
+  const handleUpdateMerchantStore = (updatedStore: Store) => {
+    setMerchantStore(updatedStore);
+    setStores((prev) => {
+      const exists = prev.some((s) => s.id === updatedStore.id);
+      const next = exists
+        ? prev.map((s) => (s.id === updatedStore.id ? updatedStore : s))
+        : [updatedStore, ...prev];
+      localStorage.setItem('comercio_campina_stores', JSON.stringify(next));
+      return next;
+    });
+  };
+
+  const handleMerchantLogout = () => {
+    const token = localStorage.getItem('comercio_cg_merchant_token') || '';
+    if (token) {
+      merchantLogoutApi(token).catch(() => {});
+    }
+    localStorage.removeItem('comercio_cg_merchant_token');
+    localStorage.removeItem('comercio_cg_merchant_user');
+    localStorage.removeItem('comercio_cg_merchant_store');
+    setMerchantUser(null);
+    setMerchantStore(null);
+    setIsMerchantDashboardOpen(false);
+  };
+
+  const handleViewMyStorePage = () => {
+    if (merchantStore) {
+      setSelectedStore(merchantStore);
+      setIsMerchantDashboardOpen(false);
       window.scrollTo({ top: 0, behavior: 'instant' });
     }
   };
@@ -225,6 +300,20 @@ export default function App() {
     );
   }
 
+  // Painel Exclusivo do Lojista (Controle apenas da sua loja)
+  if (isMerchantDashboardOpen && merchantUser && merchantStore) {
+    return (
+      <MerchantStoreDashboard
+        merchant={merchantUser}
+        store={merchantStore}
+        onUpdateStore={handleUpdateMerchantStore}
+        onViewMyStorePage={handleViewMyStorePage}
+        onBackToPortal={() => setIsMerchantDashboardOpen(false)}
+        onLogout={handleMerchantLogout}
+      />
+    );
+  }
+
   // If an establishment is selected, display its dedicated website view (not a modal)
   if (selectedStore) {
     return (
@@ -242,12 +331,13 @@ export default function App() {
   return (
     <div className="min-h-screen flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-[#F26522]/20 selection:text-[#0B3B60] pb-24 md:pb-0">
       
-      {/* 1. Header Fixo & Identidade Co-Branded */}
+      {/* 1. Header Fixo com Botão Exclusivo de Login / Área do Lojista */}
       <Header
         onOpenMenu={() => setIsMenuOpen(true)}
-        onOpenRegister={() => setIsRegisterOpen(true)}
-        onFocusSearch={handleFocusSearch}
-        onOpenAdmin={() => setIsAdminOpen(true)}
+        onOpenMerchantAuth={() => setIsMerchantAuthOpen(true)}
+        isMerchantLoggedIn={!!merchantUser}
+        merchantStoreName={merchantStore?.name}
+        onOpenMerchantDashboard={() => setIsMerchantDashboardOpen(true)}
       />
 
       {/* Main Content Area */}
@@ -314,6 +404,23 @@ export default function App() {
         onOpenRegister={() => setIsRegisterOpen(true)}
         onSelectNeighborhood={(n) => setSelectedNeighborhood(n)}
         onOpenAdmin={() => setIsAdminOpen(true)}
+        isMerchantLoggedIn={!!merchantUser}
+        onOpenMerchantAuth={() => setIsMerchantAuthOpen(true)}
+        onOpenMerchantDashboard={() => setIsMerchantDashboardOpen(true)}
+      />
+
+      {/* Modal de Autenticação / Cadastro Exclusivo do Lojista */}
+      <MerchantAuthModal
+        isOpen={isMerchantAuthOpen}
+        onClose={() => setIsMerchantAuthOpen(false)}
+        onAuthSuccess={(user, store) => {
+          setMerchantUser(user);
+          setMerchantStore(store);
+          if (store) {
+            handleUpdateMerchantStore(store);
+          }
+          setIsMerchantDashboardOpen(true);
+        }}
       />
 
     </div>

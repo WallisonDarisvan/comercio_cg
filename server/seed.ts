@@ -1,3 +1,4 @@
+import crypto from 'crypto';
 import { pool } from './db';
 import {
   STORES_DATA,
@@ -102,6 +103,28 @@ export async function seedDb() {
         ]);
       }
       console.log(`[DB] ${TV_PROGRAMS.length} programas da TV inseridos.`);
+    }
+
+    // 6. Check & seed demo merchant
+    const { rows: merchantRows } = await client.query('SELECT COUNT(*) FROM merchants');
+    if (parseInt(merchantRows[0].count, 10) === 0) {
+      console.log('[DB] Criando conta de lojista de demonstração...');
+      const salt = crypto.randomBytes(16).toString('hex');
+      const passwordHash = crypto.pbkdf2Sync('lojista123', salt, 10000, 64, 'sha512').toString('hex');
+      await client.query(`
+        INSERT INTO merchants (id, name, email, password_hash, salt, whatsapp, store_id)
+        VALUES ($1, $2, $3, $4, $5, $6, $7)
+        ON CONFLICT (id) DO NOTHING
+      `, [
+        'merchant-demo-1',
+        'Carlos Eduardo',
+        'lojista@comerciocg.com.br',
+        passwordHash,
+        salt,
+        '83998881234',
+        'store-1'
+      ]);
+      console.log('[DB] Lojista demo criado: lojista@comerciocg.com.br / lojista123');
     }
   } finally {
     client.release();

@@ -17,6 +17,9 @@ interface DrawerMenuProps {
   onOpenRegister: () => void;
   onSelectNeighborhood: (neighborhood: string) => void;
   onOpenAdmin: () => void;
+  isMerchantLoggedIn?: boolean;
+  onOpenMerchantAuth?: () => void;
+  onOpenMerchantDashboard?: () => void;
 }
 
 export const DrawerMenu: React.FC<DrawerMenuProps> = ({
@@ -25,6 +28,9 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
   onOpenRegister,
   onSelectNeighborhood,
   onOpenAdmin,
+  isMerchantLoggedIn = false,
+  onOpenMerchantAuth,
+  onOpenMerchantDashboard,
 }) => {
   if (!isOpen) return null;
 
@@ -94,12 +100,27 @@ export const DrawerMenu: React.FC<DrawerMenuProps> = ({
               <button
                 onClick={() => {
                   onClose();
+                  if (isMerchantLoggedIn) {
+                    onOpenMerchantDashboard?.();
+                  } else {
+                    onOpenMerchantAuth?.();
+                  }
+                }}
+                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-sm font-semibold transition-colors min-h-[44px] text-left text-[#0B3B60] cursor-pointer"
+              >
+                <Store className="w-4 h-4 text-[#F26522]" />
+                <span>{isMerchantLoggedIn ? 'Minha Loja (Painel)' : 'Área do Lojista (Login)'}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  onClose();
                   onOpenAdmin();
                 }}
                 className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-slate-100 text-sm font-semibold transition-colors min-h-[44px] text-left text-slate-700 cursor-pointer"
               >
                 <Shield className="w-4 h-4 text-[#0B3B60]" />
-                <span>Área Administrativa (Gestão)</span>
+                <span>Painel Admin Geral</span>
               </button>
             </nav>
           </div>
