@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import {
   Star,
   MapPin,
-  Tv,
   CheckCircle2,
   Grid,
   Columns,
   Globe,
   ArrowRight,
+  Sparkles,
+  Store as StoreIcon,
+  Building2,
 } from 'lucide-react';
 import { Store } from '../data/mockData';
 
@@ -27,7 +29,7 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
   const handleWhatsappDirect = (e: React.MouseEvent, store: Store) => {
     e.stopPropagation();
     const msg = encodeURIComponent(
-      `Olá! Encontrei o estabelecimento ${store.name} no portal Comércio Campina / TV Borborema e gostaria de mais informações!`
+      `Olá! Encontrei o estabelecimento ${store.name} no portal Comércio Campina e gostaria de mais informações!`
     );
     window.open(`https://wa.me/${store.whatsapp}?text=${msg}`, '_blank');
   };
@@ -41,8 +43,8 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-500/15 to-orange-500/15 border border-amber-500/30 text-[#0B3B60] text-[11px] sm:text-xs font-bold">
-                <Tv className="w-3.5 h-3.5 text-[#F26522]" />
-                RECOMENDADOS NO AR
+                <Sparkles className="w-3.5 h-3.5 text-[#F26522]" />
+                DESTAQUES DA CIDADE
               </span>
               <span className="text-[11px] sm:text-xs text-slate-500 font-medium">
                 Campina Grande & Região
@@ -50,10 +52,10 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
             </div>
             
             <h2 className="text-xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Vitrine Oficial da TV Borborema
+              Vitrine de Comércios & Empresas
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 mt-0.5 max-w-2xl">
-              Empresas e marcas certificadas com credibilidade de mídia, ofertas validadas e atendimento direto via WhatsApp.
+              Encontre os melhores estabelecimentos da cidade, descubra produtos e serviços de qualidade e fale diretamente pelo WhatsApp.
             </p>
           </div>
 
@@ -92,7 +94,7 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
         {stores.length === 0 ? (
           <div className="bg-white rounded-3xl border border-dashed border-slate-300 p-8 sm:p-12 text-center max-w-xl mx-auto shadow-xs">
             <div className="w-16 h-16 rounded-2xl bg-amber-50 text-[#F26522] flex items-center justify-center mx-auto mb-4">
-              <Tv className="w-8 h-8" />
+              <StoreIcon className="w-8 h-8" />
             </div>
             <h3 className="text-lg font-bold text-slate-900 mb-1">
               Nenhum comércio encontrado para estes filtros
@@ -102,7 +104,7 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
             </p>
             <button
               onClick={onOpenRegister}
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0B3B60] hover:bg-[#145388] text-white text-xs font-bold transition-all shadow-sm"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#0B3B60] hover:bg-[#145388] text-white text-xs font-bold transition-all shadow-sm cursor-pointer"
             >
               Cadastre sua loja nesta categoria
             </button>
@@ -136,11 +138,11 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
                   {/* Gradient Scrim for Readability */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
 
-                  {/* Gradient TV Badge Tag */}
+                  {/* Gradient Highlight Badge Tag */}
                   <div className="absolute top-3 left-3 flex flex-col gap-1 items-start">
                     <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#F26522] to-amber-500 text-white text-[11px] font-extrabold shadow-md flex items-center gap-1.5 tracking-tight">
-                      <Tv className="w-3 h-3 text-white fill-white" />
-                      {store.tagTv}
+                      <Sparkles className="w-3 h-3 text-white fill-white" />
+                      Destaque em Campina
                     </span>
                   </div>
 
@@ -169,7 +171,7 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
                         {store.name}
                       </h3>
                       {store.isVerifiedTv && (
-                        <span title="Anunciante Verificado TV Borborema" className="shrink-0 mt-0.5">
+                        <span title="Empresa Verificada Comércio Campina" className="shrink-0 mt-0.5">
                           <CheckCircle2 className="w-4 h-4 text-blue-600 fill-blue-50" />
                         </span>
                       )}
@@ -200,14 +202,14 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
         <div className="mt-8 sm:mt-10 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-[#0B3B60] to-[#145388] text-white flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 shadow-sm">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0">
-              <Tv className="w-5 h-5 text-amber-400" />
+              <Building2 className="w-5 h-5 text-amber-400" />
             </div>
             <div>
               <h4 className="font-bold text-sm sm:text-base leading-snug">
-                Compre com a confiança de quem está na televisão aberta
+                Compre com a confiança e facilidade do comércio local
               </h4>
               <p className="text-xs text-blue-100 mt-0.5">
-                Lojas parceiras com CNPJ ativo, endereço físico em Campina Grande e canais diretos de suporte.
+                Empresas com endereço físico em Campina Grande, atendimento humanizado e contato direto.
               </p>
             </div>
           </div>
@@ -215,7 +217,7 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
             onClick={onOpenRegister}
             className="w-full sm:w-auto px-4 py-2.5 rounded-xl bg-white text-[#0B3B60] hover:bg-slate-100 active:scale-95 text-xs font-bold transition-all whitespace-nowrap min-h-[44px] shrink-0 text-center flex items-center justify-center cursor-pointer shadow-xs"
           >
-            Quero Anunciar Minha Loja
+            Quero Cadastrar Minha Loja
           </button>
         </div>
 

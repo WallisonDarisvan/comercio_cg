@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sparkles, Tv, ArrowRight, X } from 'lucide-react';
+import { Sparkles, ArrowRight, X } from 'lucide-react';
 
 interface StickyCTAProps {
   onOpenRegister: () => void;
@@ -16,10 +16,10 @@ export const StickyCTA: React.FC<StickyCTAProps> = ({ onOpenRegister }) => {
           onOpenRegister();
         }}
         className="hidden md:flex fixed bottom-4 right-4 z-40 px-3.5 py-2.5 rounded-full bg-gradient-to-r from-[#F26522] to-amber-500 text-white text-xs font-bold shadow-xl hover:scale-105 active:scale-95 transition-all items-center gap-2 border border-white/20 cursor-pointer"
-        title="Cadastrar Loja na TV Borborema"
+        title="Cadastrar Loja no Comércio Campina"
       >
-        <Tv className="w-4 h-4" />
-        <span>Anunciar na TV</span>
+        <Sparkles className="w-4 h-4" />
+        <span>Cadastrar Empresa</span>
         <span className="px-1.5 py-0.5 rounded-full bg-white/20 text-[10px] font-extrabold">50% OFF</span>
       </button>
     );
@@ -32,7 +32,7 @@ export const StickyCTA: React.FC<StickyCTAProps> = ({ onOpenRegister }) => {
         {/* Left message & Badge */}
         <div className="flex items-center gap-2 sm:gap-3 overflow-hidden min-w-0">
           <div className="hidden xs:flex w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-white/15 items-center justify-center shrink-0">
-            <Tv className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300" />
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-300" />
           </div>
 
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 leading-tight truncate min-w-0">
@@ -41,12 +41,12 @@ export const StickyCTA: React.FC<StickyCTAProps> = ({ onOpenRegister }) => {
                 50% OFF
               </span>
               <span className="text-xs sm:text-sm font-bold truncate">
-                <span className="sm:hidden">Anuncie na TV e no Portal</span>
-                <span className="hidden sm:inline">Quer sua loja na TV Borborema e no portal?</span>
+                <span className="sm:hidden">Destaque sua empresa em Campina</span>
+                <span className="hidden sm:inline">Quer sua loja em destaque no Comércio Campina?</span>
               </span>
             </div>
             <span className="hidden lg:inline text-xs text-blue-100 font-normal">
-              Inserções com QR Code + Presença de alta conversão para o comércio de Campina.
+              Alcance milhares de clientes na cidade com presença digital e WhatsApp direto.
             </span>
           </div>
         </div>
