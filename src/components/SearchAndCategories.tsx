@@ -46,21 +46,77 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
   };
 
   const getCategoryIcon = (iconName: string) => {
+    const iconClass = "w-6 h-6 sm:w-7 sm:h-7 transition-transform group-hover:scale-110";
     switch (iconName) {
       case 'Utensils':
-        return <Utensils className="w-4 h-4 sm:w-5 sm:h-5" />;
+        return <Utensils className={iconClass} />;
       case 'ShoppingBag':
-        return <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />;
+        return <ShoppingBag className={iconClass} />;
       case 'Smartphone':
-        return <Smartphone className="w-4 h-4 sm:w-5 sm:h-5" />;
+        return <Smartphone className={iconClass} />;
       case 'Glasses':
-        return <Glasses className="w-4 h-4 sm:w-5 sm:h-5" />;
+        return <Glasses className={iconClass} />;
       case 'Car':
-        return <Car className="w-4 h-4 sm:w-5 sm:h-5" />;
+        return <Car className={iconClass} />;
       case 'Hammer':
-        return <Hammer className="w-4 h-4 sm:w-5 sm:h-5" />;
+        return <Hammer className={iconClass} />;
       default:
-        return <Store className="w-4 h-4 sm:w-5 sm:h-5" />;
+        return <Store className={iconClass} />;
+    }
+  };
+
+  const getCategoryTheme = (id: string, isActive: boolean) => {
+    if (isActive) {
+      return {
+        iconBg: 'bg-[#0B3B60] text-white shadow-lg shadow-[#0B3B60]/25 ring-4 ring-[#0B3B60]/20 scale-105',
+        badgeBg: 'bg-[#F26522] text-white ring-2 ring-white',
+        textClass: 'text-[#0B3B60] font-bold',
+      };
+    }
+
+    switch (id) {
+      case 'gastronomia':
+        return {
+          iconBg: 'bg-amber-50 text-amber-600 border border-amber-200/60 hover:bg-amber-100 hover:border-amber-300',
+          badgeBg: 'bg-amber-100 text-amber-800 border border-amber-200',
+          textClass: 'text-slate-700 hover:text-amber-600',
+        };
+      case 'moda':
+        return {
+          iconBg: 'bg-pink-50 text-pink-600 border border-pink-200/60 hover:bg-pink-100 hover:border-pink-300',
+          badgeBg: 'bg-pink-100 text-pink-800 border border-pink-200',
+          textClass: 'text-slate-700 hover:text-pink-600',
+        };
+      case 'tecnologia':
+        return {
+          iconBg: 'bg-cyan-50 text-cyan-600 border border-cyan-200/60 hover:bg-cyan-100 hover:border-cyan-300',
+          badgeBg: 'bg-cyan-100 text-cyan-800 border border-cyan-200',
+          textClass: 'text-slate-700 hover:text-cyan-600',
+        };
+      case 'saude':
+        return {
+          iconBg: 'bg-emerald-50 text-emerald-600 border border-emerald-200/60 hover:bg-emerald-100 hover:border-emerald-300',
+          badgeBg: 'bg-emerald-100 text-emerald-800 border border-emerald-200',
+          textClass: 'text-slate-700 hover:text-emerald-600',
+        };
+      case 'automotivo':
+        return {
+          iconBg: 'bg-orange-50 text-orange-600 border border-orange-200/60 hover:bg-orange-100 hover:border-orange-300',
+          badgeBg: 'bg-orange-100 text-orange-800 border border-orange-200',
+          textClass: 'text-slate-700 hover:text-orange-600',
+        };
+      case 'construcao':
+        return {
+          iconBg: 'bg-indigo-50 text-indigo-600 border border-indigo-200/60 hover:bg-indigo-100 hover:border-indigo-300',
+          badgeBg: 'bg-indigo-100 text-indigo-800 border border-indigo-200',
+          textClass: 'text-slate-700 hover:text-indigo-600',
+        };
+      default:
+        return {
+          iconBg: 'bg-blue-50 text-blue-700 border border-blue-200/60 hover:bg-blue-100 hover:border-blue-300',
+          badgeBg: 'bg-blue-100 text-blue-800 border border-blue-200',
+          textClass: 'text-slate-700 hover:text-blue-700',
+        };
     }
   };
 
@@ -140,7 +196,7 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
           {/* Scroll arrow buttons for desktop */}
           <button
             onClick={() => scrollCarousel('left')}
-            className="hidden md:flex absolute -left-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md items-center justify-center text-slate-700 hover:text-[#0B3B60] hover:scale-105 transition-all cursor-pointer"
+            className="hidden md:flex absolute -left-4 top-8 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md items-center justify-center text-slate-700 hover:text-[#0B3B60] hover:scale-105 transition-all cursor-pointer"
             aria-label="Rolar categorias para esquerda"
           >
             <ChevronLeft className="w-5 h-5" />
@@ -148,40 +204,52 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
           
           <button
             onClick={() => scrollCarousel('right')}
-            className="hidden md:flex absolute -right-4 top-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md items-center justify-center text-slate-700 hover:text-[#0B3B60] hover:scale-105 transition-all cursor-pointer"
+            className="hidden md:flex absolute -right-4 top-8 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-white border border-slate-200 shadow-md items-center justify-center text-slate-700 hover:text-[#0B3B60] hover:scale-105 transition-all cursor-pointer"
             aria-label="Rolar categorias para direita"
           >
             <ChevronRight className="w-5 h-5" />
           </button>
 
-          {/* Touch-Friendly Horizontal Carousel with Smooth Physics */}
+          {/* Categories with Prominent Icons */}
           <div
             ref={carouselRef}
-            className="flex items-center gap-2 sm:gap-3 overflow-x-auto no-scrollbar py-1 px-0.5 scroll-smooth snap-x snap-proximity"
+            className="flex items-start justify-start sm:justify-center gap-2 sm:gap-4 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth snap-x snap-proximity"
           >
             {CATEGORIES.map((cat: Category) => {
               const isActive = selectedCategory === cat.id;
+              const theme = getCategoryTheme(cat.id, isActive);
               return (
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory(cat.id)}
-                  className={`flex items-center gap-2 px-3 py-2 sm:px-3.5 sm:py-2.5 rounded-xl text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all min-h-[44px] cursor-pointer snap-start active:scale-95 ${
-                    isActive
-                      ? 'bg-[#0B3B60] text-white shadow-sm shadow-[#0B3B60]/20'
-                      : 'bg-slate-100/90 hover:bg-slate-200/70 text-slate-700 border border-slate-200/60'
-                  }`}
+                  className="group flex flex-col items-center gap-2 shrink-0 cursor-pointer snap-start active:scale-95 transition-all text-center focus:outline-none w-20 sm:w-24"
                 >
-                  <span className={`p-1 rounded-lg ${isActive ? 'bg-white/20 text-white' : cat.color}`}>
-                    {getCategoryIcon(cat.iconName)}
-                  </span>
-                  <span>{cat.name}</span>
-                  <span
-                    className={`text-[10px] sm:text-[11px] px-1.5 py-0.2 rounded-full font-bold ${
-                      isActive ? 'bg-white/20 text-white' : 'bg-slate-200/80 text-slate-600'
-                    }`}
-                  >
-                    {cat.count}
-                  </span>
+                  {/* Prominent Icon Box with Badge */}
+                  <div className="relative">
+                    <div
+                      className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-200 ${theme.iconBg}`}
+                    >
+                      {getCategoryIcon(cat.iconName)}
+                    </div>
+                    {/* Badge Counter */}
+                    <span
+                      className={`absolute -top-1 -right-1 min-w-[20px] h-5 px-1.5 flex items-center justify-center text-[10px] sm:text-[11px] font-bold rounded-full shadow-xs transition-colors ${theme.badgeBg}`}
+                    >
+                      {cat.count}
+                    </span>
+                  </div>
+
+                  {/* Category Title */}
+                  <div className="flex flex-col items-center min-h-[32px] justify-start">
+                    <span
+                      className={`text-[11px] sm:text-xs leading-tight transition-colors line-clamp-2 px-0.5 ${theme.textClass}`}
+                    >
+                      {cat.name}
+                    </span>
+                    {isActive && (
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#F26522] mt-1 transition-all" />
+                    )}
+                  </div>
                 </button>
               );
             })}
