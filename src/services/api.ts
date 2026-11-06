@@ -60,6 +60,30 @@ export async function deleteStoreApi(id: string): Promise<boolean> {
   }
 }
 
+export async function recordStoreViewApi(storeId: string): Promise<{ viewsCount?: number; whatsappClicks?: number } | null> {
+  try {
+    const res = await fetch(`${BASE_URL}/stores/${storeId}/view`, {
+      method: 'POST',
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
+export async function recordStoreWhatsappClickApi(storeId: string): Promise<{ viewsCount?: number; whatsappClicks?: number } | null> {
+  try {
+    const res = await fetch(`${BASE_URL}/stores/${storeId}/whatsapp-click`, {
+      method: 'POST',
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchBannersApi(): Promise<CommercialBanner[] | null> {
   try {
     const res = await fetch(`${BASE_URL}/banners`);

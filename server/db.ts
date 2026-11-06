@@ -42,9 +42,14 @@ export async function initDb() {
         is_verified_tv BOOLEAN DEFAULT true,
         opening_hours VARCHAR(100) NOT NULL,
         website TEXT,
+        views_count INT DEFAULT 0,
+        whatsapp_clicks INT DEFAULT 0,
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS views_count INT DEFAULT 0;
+      ALTER TABLE stores ADD COLUMN IF NOT EXISTS whatsapp_clicks INT DEFAULT 0;
 
       CREATE TABLE IF NOT EXISTS banners (
         id VARCHAR(100) PRIMARY KEY,

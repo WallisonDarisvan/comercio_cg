@@ -460,3 +460,4 @@ export const MerchantAuthModal: React.FC<MerchantAuthModalProps> = ({
     </div>
   );
 };
+

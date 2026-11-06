@@ -20,6 +20,8 @@ export interface Store {
   isVerifiedTv: boolean;
   openingHours: string;
   website?: string;
+  viewsCount?: number;
+  whatsappClicks?: number;
 }
 
 export interface TvProgram {

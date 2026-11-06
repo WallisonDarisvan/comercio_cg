@@ -63,6 +63,8 @@ app.get('/api/stores', async (req, res) => {
       isVerifiedTv: r.is_verified_tv,
       openingHours: r.opening_hours,
       website: r.website,
+      viewsCount: parseInt(r.views_count, 10) || 0,
+      whatsappClicks: parseInt(r.whatsapp_clicks, 10) || 0,
     }));
     res.json(mapped);
   } catch (error: any) {
@@ -121,6 +123,39 @@ app.delete('/api/stores/:id', async (req, res) => {
     const { id } = req.params;
     await pool.query('DELETE FROM stores WHERE id = $1', [id]);
     res.json({ success: true, id });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// STORE ANALYTICS TRACKING
+app.post('/api/stores/:id/view', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rows } = await pool.query(`
+      UPDATE stores 
+      SET views_count = COALESCE(views_count, 0) + 1 
+      WHERE id = $1 
+      RETURNING views_count, whatsapp_clicks
+    `, [id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Loja não encontrada' });
+    res.json({ success: true, viewsCount: parseInt(rows[0].views_count, 10), whatsappClicks: parseInt(rows[0].whatsapp_clicks, 10) });
+  } catch (error: any) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/stores/:id/whatsapp-click', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { rows } = await pool.query(`
+      UPDATE stores 
+      SET whatsapp_clicks = COALESCE(whatsapp_clicks, 0) + 1 
+      WHERE id = $1 
+      RETURNING views_count, whatsapp_clicks
+    `, [id]);
+    if (rows.length === 0) return res.status(404).json({ error: 'Loja não encontrada' });
+    res.json({ success: true, viewsCount: parseInt(rows[0].views_count, 10), whatsappClicks: parseInt(rows[0].whatsapp_clicks, 10) });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
@@ -301,6 +336,8 @@ function mapStore(r: any) {
     isVerifiedTv: r.is_verified_tv,
     openingHours: r.opening_hours,
     website: r.website,
+    viewsCount: parseInt(r.views_count, 10) || 0,
+    whatsappClicks: parseInt(r.whatsapp_clicks, 10) || 0,
   };
 }
 

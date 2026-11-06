@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   ArrowLeft,
   MapPin,
@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { Store } from '../data/mockData';
+import { recordStoreViewApi, recordStoreWhatsappClickApi } from '../services/api';
 
 interface StoreWebsiteViewProps {
   store: Store;
@@ -31,6 +32,12 @@ export const StoreWebsiteView: React.FC<StoreWebsiteViewProps> = ({
 }) => {
   const [copiedCoupon, setCopiedCoupon] = useState(false);
 
+  useEffect(() => {
+    if (store && store.id) {
+      recordStoreViewApi(store.id);
+    }
+  }, [store.id]);
+
   const handleCopyCoupon = (code: string) => {
     navigator.clipboard.writeText(code);
     setCopiedCoupon(true);
@@ -38,6 +45,9 @@ export const StoreWebsiteView: React.FC<StoreWebsiteViewProps> = ({
   };
 
   const handleOpenWhatsapp = (customMessage?: string) => {
+    if (store && store.id) {
+      recordStoreWhatsappClickApi(store.id);
+    }
     const text = customMessage || `Olá! Estou acessando o site oficial da ${store.name} pelo portal Comércio Campina e gostaria de mais informações!`;
     const encoded = encodeURIComponent(text);
     window.open(`https://wa.me/${store.whatsapp}?text=${encoded}`, '_blank');
