@@ -42,6 +42,7 @@ import {
   StoreService,
   StoreTestimonial,
   StoreFaqItem,
+  StoreProcessStep,
 } from '../../data/mockData';
 import { merchantUpdateMyStoreApi, MerchantUser } from '../../services/api';
 import { ImageUpload } from '../ImageUpload';
@@ -146,6 +147,37 @@ const AVAILABLE_PAGE_SECTIONS = [
   },
 ];
 
+export type ConfigSectionTab =
+  | 'secoes'
+  | 'hero'
+  | 'offer'
+  | 'about'
+  | 'benefits'
+  | 'services'
+  | 'process'
+  | 'testimonials'
+  | 'gallery'
+  | 'faq'
+  | 'cta'
+  | 'contact'
+  | 'floatingWhatsapp';
+
+export const CONFIG_TABS = [
+  { id: 'secoes' as const, label: 'Visibilidade das Seções', isControl: true, icon: Sliders },
+  { id: 'hero' as const, label: '1. Hero', icon: StoreIcon },
+  { id: 'offer' as const, label: '2. Oferta & Cupom', icon: Tag },
+  { id: 'about' as const, label: '3. Sobre / Quem Somos', icon: FileText },
+  { id: 'benefits' as const, label: '4. Diferenciais', icon: Award },
+  { id: 'services' as const, label: '5. Serviços & Produtos', icon: ShoppingBag },
+  { id: 'process' as const, label: '6. Como Funciona', icon: Zap },
+  { id: 'testimonials' as const, label: '7. Depoimentos', icon: Star },
+  { id: 'gallery' as const, label: '8. Galeria de Fotos', icon: ImageIcon },
+  { id: 'faq' as const, label: '9. FAQ (Dúvidas)', icon: HelpCircle },
+  { id: 'cta' as const, label: '10. CTA Final', icon: Sparkles },
+  { id: 'contact' as const, label: '11. Contato & Maps', icon: MapPin },
+  { id: 'floatingWhatsapp' as const, label: '12. WhatsApp Flutuante', icon: MessageCircle },
+];
+
 interface MerchantStoreDashboardProps {
   merchant: MerchantUser;
   store: Store;
@@ -166,14 +198,13 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
   // Active Tab: 'metricas' | 'configuracoes'
   const [activeTab, setActiveTab] = useState<'metricas' | 'configuracoes'>('configuracoes');
 
-  // Active Sub-section in Config: 'secoes' | 'geral' | 'sobre' | 'produtos' | 'faq' | 'avaliacoes' | 'galeria'
-  const [activeConfigSection, setActiveConfigSection] = useState<
-    'secoes' | 'geral' | 'sobre' | 'produtos' | 'faq' | 'avaliacoes' | 'galeria'
-  >('secoes');
+  // Active Sub-section in Config: 12 seções individuais + painel de visibilidade
+  const [activeConfigSection, setActiveConfigSection] = useState<ConfigSectionTab>('secoes');
 
   // Section visibility state (exibir ou ocultar qualquer seção)
   const [visibleSections, setVisibleSections] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {
+      hero: true,
       offer: true,
       about: true,
       benefits: true,
@@ -299,6 +330,40 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
   );
   const [newGalleryUrl, setNewGalleryUrl] = useState('');
   const [uploadingGallery, setUploadingGallery] = useState(false);
+
+  // Process Steps (Como Funciona)
+  const defaultProcessSteps: StoreProcessStep[] = [
+    {
+      step: 1,
+      title: '1. Atendimento no WhatsApp',
+      description: 'Clique em qualquer botão da página e inicie a conversa direta com nossa equipe.',
+    },
+    {
+      step: 2,
+      title: '2. Consultoria e Orçamento',
+      description: 'Apresentamos opções de produtos e valores exclusivos de Campina Grande.',
+    },
+    {
+      step: 3,
+      title: '3. Pagamento Facilitado',
+      description: 'Pague com segurança via Pix com desconto ou parcele nos principais cartões.',
+    },
+    {
+      step: 4,
+      title: '4. Entrega Rápida ou Retirada',
+      description: `Receba seus itens no seu bairro ou retire direto no ${store.neighborhood || 'Centro'}.`,
+    },
+  ];
+
+  const [processSteps, setProcessSteps] = useState<StoreProcessStep[]>(
+    store.processSteps && store.processSteps.length > 0 ? store.processSteps : defaultProcessSteps
+  );
+
+  const handleUpdateProcessStep = (index: number, field: 'title' | 'description', value: string) => {
+    setProcessSteps((prev) =>
+      prev.map((step, i) => (i === index ? { ...step, [field]: value } : step))
+    );
+  };
 
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -448,6 +513,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
       faq: faqs,
       testimonials,
       gallery,
+      processSteps,
       visibleSections,
     };
 
@@ -717,113 +783,61 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
         {activeTab === 'configuracoes' && (
           <form onSubmit={handleSave} className="space-y-6 animate-in fade-in duration-200">
             
-            {/* Sub-navigation bar across all customizable page sections (Quebra em duas linhas para exibir todos os botões) */}
+            {/* Sub-navigation bar across all 12 customizable page sections + Visibilidade */}
             <div className="flex flex-wrap items-center gap-2 pb-3 border-b border-slate-200">
-              <button
-                type="button"
-                onClick={() => setActiveConfigSection('secoes')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeConfigSection === 'secoes'
-                    ? 'bg-[#0B3B60] text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                <Sliders className="w-3.5 h-3.5 text-[#F26522]" />
-                <span>Visibilidade das Seções</span>
-                <span className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
-                  activeConfigSection === 'secoes' ? 'bg-amber-400 text-slate-900' : 'bg-emerald-100 text-emerald-800'
-                }`}>
-                  {AVAILABLE_PAGE_SECTIONS.filter((s) => isSectionVisible(s.id)).length}/{AVAILABLE_PAGE_SECTIONS.length}
-                </span>
-              </button>
+              {CONFIG_TABS.map((tab) => {
+                const IconComp = tab.icon;
+                const isActive = activeConfigSection === tab.id;
+                const isSectionOn = tab.isControl || isSectionVisible(tab.id);
 
-              <button
-                type="button"
-                onClick={() => setActiveConfigSection('geral')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeConfigSection === 'geral'
-                    ? 'bg-[#0B3B60] text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                <StoreIcon className="w-3.5 h-3.5" />
-                <span>1. Dados & Hero</span>
-              </button>
+                return (
+                  <button
+                    key={tab.id}
+                    type="button"
+                    onClick={() => setActiveConfigSection(tab.id as ConfigSectionTab)}
+                    className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 shadow-2xs ${
+                      isActive
+                        ? 'bg-[#0B3B60] text-white shadow-xs scale-102 ring-2 ring-[#0B3B60]/20'
+                        : isSectionOn
+                        ? 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200/90'
+                        : 'bg-slate-100 text-slate-400 hover:bg-slate-200/80 border border-dashed border-slate-300'
+                    }`}
+                  >
+                    <IconComp
+                      className={`w-3.5 h-3.5 ${
+                        isActive ? 'text-amber-400' : isSectionOn ? 'text-[#F26522]' : 'text-slate-400'
+                      }`}
+                    />
+                    <span>{tab.label}</span>
 
-              <button
-                type="button"
-                onClick={() => setActiveConfigSection('sobre')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeConfigSection === 'sobre'
-                    ? 'bg-[#0B3B60] text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                <FileText className="w-3.5 h-3.5" />
-                <span>2. Sobre / História</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveConfigSection('produtos')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeConfigSection === 'produtos'
-                    ? 'bg-[#0B3B60] text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                <ShoppingBag className="w-3.5 h-3.5" />
-                <span>3. Serviços / Produtos</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveConfigSection('faq')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeConfigSection === 'faq'
-                    ? 'bg-[#0B3B60] text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                <HelpCircle className="w-3.5 h-3.5" />
-                <span>4. FAQ (Dúvidas)</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveConfigSection('avaliacoes')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeConfigSection === 'avaliacoes'
-                    ? 'bg-[#0B3B60] text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                <Star className="w-3.5 h-3.5" />
-                <span>5. Depoimentos</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveConfigSection('galeria')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeConfigSection === 'galeria'
-                    ? 'bg-[#0B3B60] text-white shadow-xs'
-                    : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
-                }`}
-              >
-                <ImageIcon className="w-3.5 h-3.5" />
-                <span>6. Galeria de Fotos</span>
-              </button>
+                    {tab.isControl ? (
+                      <span
+                        className={`ml-1 px-1.5 py-0.2 rounded-full text-[10px] font-extrabold ${
+                          isActive ? 'bg-amber-400 text-slate-900' : 'bg-emerald-100 text-emerald-800'
+                        }`}
+                      >
+                        {AVAILABLE_PAGE_SECTIONS.filter((s) => isSectionVisible(s.id)).length}/
+                        {AVAILABLE_PAGE_SECTIONS.length}
+                      </span>
+                    ) : (
+                      <span
+                        className={`w-2 h-2 rounded-full ${isSectionOn ? 'bg-emerald-500' : 'bg-slate-300'}`}
+                        title={isSectionOn ? 'Seção ativa na página' : 'Seção oculta na página'}
+                      />
+                    )}
+                  </button>
+                );
+              })}
             </div>
 
-            {/* SEÇÃO 0: GERENCIAMENTO DE VISIBILIDADE DAS SEÇÕES (EXIBIR OU OCULTAR) */}
+            {/* SEÇÃO 0: GERENCIAMENTO DE VISIBILIDADE DAS 12 SEÇÕES (EXIBIR OU OCULTAR) */}
             {activeConfigSection === 'secoes' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100">
                   <div>
                     <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                       <Sliders className="w-5 h-5 text-[#F26522]" />
-                      <span>Exibir ou Ocultar Seções da Página</span>
+                      <span>Exibir ou Ocultar as 12 Seções da Página</span>
                     </h2>
                     <p className="text-xs text-slate-500 mt-1 max-w-xl">
                       Escolha quais seções você quer que apareçam na página oficial da sua loja. Clique em qualquer card ou no botão correspondente para ativar ou desativar.
@@ -836,7 +850,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                       onClick={() => handleSetAllSections(true)}
                       className="px-3 py-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 rounded-xl transition-all border border-emerald-200 cursor-pointer"
                     >
-                      Exibir Todas
+                      Exibir Todas (12)
                     </button>
                     <button
                       type="button"
@@ -866,7 +880,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
 
                 {/* Section Toggles Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {AVAILABLE_PAGE_SECTIONS.map((sec) => {
+                  {AVAILABLE_PAGE_SECTIONS.map((sec, idx) => {
                     const IconComponent = sec.icon;
                     const visible = isSectionVisible(sec.id);
 
@@ -888,6 +902,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                           </div>
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 mb-0.5">
+                              <span className="text-xs font-black text-slate-400">#{idx + 1}</span>
                               <h4 className="text-sm font-bold text-slate-800 truncate">
                                 {sec.title}
                               </h4>
@@ -942,13 +957,13 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
               </div>
             )}
 
-            {/* SEÇÃO 1: GERAL & HERO */}
-            {activeConfigSection === 'geral' && (
+            {/* SEÇÃO 1: HERO (BANNER PRINCIPAL & IDENTIDADE) */}
+            {activeConfigSection === 'hero' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                     <StoreIcon className="w-5 h-5 text-[#F26522]" />
-                    <span>Identidade, Hero & Canais de Atendimento</span>
+                    <span>1. Hero Section (Capa Principal & Identidade)</span>
                   </h2>
                   <button
                     type="button"
@@ -1006,7 +1021,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Bairro em Campina Grande *
+                      Bairro Principal em Campina Grande *
                     </label>
                     <select
                       value={neighborhood}
@@ -1023,62 +1038,15 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
 
                   <div className="sm:col-span-2">
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Endereço Completo (Rua, Número, Referência)
+                      Frase de Apresentação / Slogan da Capa *
                     </label>
-                    <input
-                      type="text"
-                      value={address}
-                      onChange={(e) => setAddress(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">
-                      WhatsApp Comercial (Onde chegam os pedidos) *
-                    </label>
-                    <input
-                      type="text"
+                    <textarea
+                      rows={2}
                       required
-                      value={whatsapp}
-                      onChange={(e) => setWhatsapp(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border-2 border-emerald-500/30 focus:border-emerald-600 outline-none font-semibold text-slate-900"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Telefone Fixo / Celular Adicional
-                    </label>
-                    <input
-                      type="text"
-                      value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Instagram (@perfil)
-                    </label>
-                    <input
-                      type="text"
-                      value={instagram}
-                      onChange={(e) => setInstagram(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Horário de Funcionamento
-                    </label>
-                    <input
-                      type="text"
-                      value={openingHours}
-                      onChange={(e) => setOpeningHours(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="Breve frase convidativa que aparece em destaque na capa da sua loja."
+                      className="w-full p-3.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none leading-relaxed"
                     />
                   </div>
 
@@ -1092,23 +1060,61 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                       maxSizeKb={150}
                     />
                   </div>
+                </div>
+              </div>
+            )}
 
-                  <div className="sm:col-span-2">
+            {/* SEÇÃO 2: OFERTA & CUPOM */}
+            {activeConfigSection === 'offer' && (
+              <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
+                    <Tag className="w-5 h-5 text-[#F26522]" />
+                    <span>2. Oferta Promocional & Cupom de Desconto</span>
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('offer')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('offer')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('offer') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Oferta Exibida na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Oferta Oculta na Página</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
                     <label className="block text-xs font-bold text-[#F26522] uppercase tracking-wider mb-1.5">
-                      Oferta em Destaque no Portal
+                      Frase da Oferta em Destaque *
                     </label>
                     <input
                       type="text"
                       value={offer}
                       onChange={(e) => setOffer(e.target.value)}
-                      placeholder="ex: 10% de desconto à vista no WhatsApp"
+                      placeholder="ex: 10% de desconto à vista no Pix para clientes do portal"
                       className="w-full px-3.5 py-2.5 text-sm rounded-xl border-2 border-orange-200 bg-orange-50/30 focus:border-[#F26522] outline-none font-semibold"
                     />
+                    <p className="text-[11px] text-slate-500 mt-1">
+                      Aparece em um card dourado destacado logo abaixo do Hero.
+                    </p>
                   </div>
 
                   <div>
                     <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Cupom Promocional (Opcional)
+                      Código do Cupom de Desconto (Opcional)
                     </label>
                     <input
                       type="text"
@@ -1117,30 +1123,21 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                       placeholder="ex: CAMPINA10"
                       className="w-full px-3.5 py-2.5 text-sm uppercase font-mono rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
                     />
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Website Oficial (Opcional)
-                    </label>
-                    <input
-                      type="url"
-                      value={website}
-                      onChange={(e) => setWebsite(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
-                    />
+                    <p className="text-[11px] text-slate-500 mt-1">
+                      Clientes podem copiar este cupom com um clique para colar no WhatsApp.
+                    </p>
                   </div>
                 </div>
               </div>
             )}
 
-            {/* SEÇÃO 2: SOBRE / HISTÓRIA */}
-            {activeConfigSection === 'sobre' && (
+            {/* SEÇÃO 3: SOBRE / QUEM SOMOS */}
+            {activeConfigSection === 'about' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-5">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                     <FileText className="w-5 h-5 text-[#F26522]" />
-                    <span>Seção Sobre / Quem Somos</span>
+                    <span>3. Seção Sobre a Empresa / Quem Somos</span>
                   </h2>
                   <button
                     type="button"
@@ -1191,29 +1188,102 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                     maxSizeKb={150}
                   />
                 </div>
+              </div>
+            )}
 
-                <div className="pt-2">
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Chamada para Ação no Final da Página (Título CTA)
-                  </label>
-                  <input
-                    type="text"
-                    value={ctaTitle}
-                    onChange={(e) => setCtaTitle(e.target.value)}
-                    placeholder={`Pronto para falar diretamente com a equipe da ${name}?`}
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
-                  />
+            {/* SEÇÃO 4: DIFERENCIAIS & VANTAGENS */}
+            {activeConfigSection === 'benefits' && (
+              <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
+                    <Award className="w-5 h-5 text-[#F26522]" />
+                    <span>4. Diferenciais & Vantagens Exclusivas ({highlights.length})</span>
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('benefits')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('benefits')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('benefits') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Diferenciais Exibidos</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Diferenciais Ocultos</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Adicionar Novo Diferencial
+                  </h4>
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      value={newHighlight}
+                      onChange={(e) => setNewHighlight(e.target.value)}
+                      placeholder="ex: Atendimento no WhatsApp em até 2 minutos"
+                      className="flex-1 px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddHighlight}
+                      className="px-4 py-2 bg-[#0B3B60] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer hover:bg-[#145388]"
+                    >
+                      <Plus className="w-4 h-4" />
+                      <span>Adicionar</span>
+                    </button>
+                  </div>
+                  <p className="text-[11px] text-slate-500">
+                    Estes diferenciais são exibidos como cards estilizados com ícones na seção "Por que escolher a {name}?".
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {highlights.map((h, idx) => (
+                    <div
+                      key={idx}
+                      className="p-3.5 rounded-2xl bg-white border border-slate-200 flex items-center justify-between gap-3 shadow-2xs"
+                    >
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span className="text-xs font-bold text-slate-800">{h}</span>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveHighlight(idx)}
+                        className="p-1.5 text-slate-400 hover:text-red-500 cursor-pointer"
+                        title="Remover diferencial"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                  {highlights.length === 0 && (
+                    <div className="sm:col-span-2 p-4 text-center text-xs text-slate-500 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+                      Nenhum diferencial personalizado cadastrado. Os 4 diferenciais padrão de excelência de Campina Grande serão exibidos automaticamente.
+                    </div>
+                  )}
                 </div>
               </div>
             )}
 
-            {/* SEÇÃO 3: SERVIÇOS & PRODUTOS COM WHATSAPP */}
-            {activeConfigSection === 'produtos' && (
+            {/* SEÇÃO 5: SERVIÇOS & PRODUTOS COM WHATSAPP */}
+            {activeConfigSection === 'services' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                     <ShoppingBag className="w-5 h-5 text-[#F26522]" />
-                    <span>Catálogo de Serviços & Produtos ({services.length})</span>
+                    <span>5. Catálogo de Serviços & Produtos ({services.length})</span>
                   </h2>
                   <button
                     type="button"
@@ -1322,24 +1392,24 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
               </div>
             )}
 
-            {/* SEÇÃO 4: FAQ (DÚVIDAS FREQUENTES) */}
-            {activeConfigSection === 'faq' && (
+            {/* SEÇÃO 6: COMO FUNCIONA (PASSO A PASSO) */}
+            {activeConfigSection === 'process' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
-                    <HelpCircle className="w-5 h-5 text-[#F26522]" />
-                    <span>Perguntas Frequentes (FAQ)</span>
+                    <Zap className="w-5 h-5 text-[#F26522]" />
+                    <span>6. Como Funciona Nosso Atendimento (4 Etapas)</span>
                   </h2>
                   <button
                     type="button"
-                    onClick={() => toggleSectionVisibility('faq')}
+                    onClick={() => toggleSectionVisibility('process')}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
-                      isSectionVisible('faq')
+                      isSectionVisible('process')
                         ? 'bg-emerald-500 text-white hover:bg-emerald-600'
                         : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
                     }`}
                   >
-                    {isSectionVisible('faq') ? (
+                    {isSectionVisible('process') ? (
                       <>
                         <Eye className="w-3.5 h-3.5" />
                         <span>Seção Exibida na Página</span>
@@ -1353,65 +1423,58 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                   </button>
                 </div>
 
-                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
-                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
-                    Adicionar Nova Pergunta
-                  </h4>
-                  <input
-                    type="text"
-                    value={newFaqQuestion}
-                    onChange={(e) => setNewFaqQuestion(e.target.value)}
-                    placeholder="Pergunta (ex: Vocês entregam no Catolé?)"
-                    className="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none"
-                  />
-                  <textarea
-                    rows={2}
-                    value={newFaqAnswer}
-                    onChange={(e) => setNewFaqAnswer(e.target.value)}
-                    placeholder="Resposta clara para o cliente..."
-                    className="w-full p-3 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddFaq}
-                    className="px-4 py-2 bg-[#0B3B60] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer hover:bg-[#145388]"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Adicionar ao FAQ</span>
-                  </button>
-                </div>
+                <p className="text-xs text-slate-500">
+                  Estas 4 etapas ilustram de forma clara e profissional como o cliente entra em contato, escolhe, paga e recebe os produtos/serviços da {name}.
+                </p>
 
-                <div className="space-y-3">
-                  {faqs.map((faq, idx) => (
-                    <div
-                      key={idx}
-                      className="p-4 rounded-2xl bg-slate-50/50 border border-slate-200 flex items-start justify-between gap-3"
-                    >
-                      <div>
-                        <h4 className="text-sm font-bold text-slate-900">{faq.question}</h4>
-                        <p className="text-xs text-slate-600 mt-1 leading-relaxed">{faq.answer}</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {processSteps.map((step, idx) => (
+                    <div key={idx} className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-2">
+                      <div className="flex items-center gap-2">
+                        <span className="w-6 h-6 rounded-lg bg-amber-400 text-[#0B3B60] font-black text-xs flex items-center justify-center">
+                          {idx + 1}
+                        </span>
+                        <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                          Etapa {idx + 1}
+                        </span>
                       </div>
-                      <button
-                        type="button"
-                        onClick={() => handleRemoveFaq(idx)}
-                        className="p-1.5 text-slate-400 hover:text-red-500 cursor-pointer"
-                        title="Remover pergunta"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                          Título da Etapa
+                        </label>
+                        <input
+                          type="text"
+                          value={step.title}
+                          onChange={(e) => handleUpdateProcessStep(idx, 'title', e.target.value)}
+                          className="w-full px-3 py-1.5 text-xs font-bold rounded-xl border border-slate-200 bg-white outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                          Descrição Explicativa
+                        </label>
+                        <textarea
+                          rows={2}
+                          value={step.description}
+                          onChange={(e) => handleUpdateProcessStep(idx, 'description', e.target.value)}
+                          className="w-full p-2.5 text-xs rounded-xl border border-slate-200 bg-white outline-none"
+                        />
+                      </div>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* SEÇÃO 5: DEPOIMENTOS */}
-            {activeConfigSection === 'avaliacoes' && (
+            {/* SEÇÃO 7: DEPOIMENTOS DE CLIENTES */}
+            {activeConfigSection === 'testimonials' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                     <Star className="w-5 h-5 text-amber-500 fill-amber-500" />
-                    <span>Depoimentos & Avaliações</span>
+                    <span>7. Depoimentos & Avaliações ({testimonials.length})</span>
                   </h2>
                   <button
                     type="button"
@@ -1500,13 +1563,13 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
               </div>
             )}
 
-            {/* SEÇÃO 6: GALERIA DE FOTOS */}
-            {activeConfigSection === 'galeria' && (
+            {/* SEÇÃO 8: GALERIA DE FOTOS */}
+            {activeConfigSection === 'gallery' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
                   <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
                     <ImageIcon className="w-5 h-5 text-[#F26522]" />
-                    <span>Fotos da Galeria</span>
+                    <span>8. Galeria de Fotos da Loja ({gallery.length})</span>
                   </h2>
                   <button
                     type="button"
@@ -1623,6 +1686,333 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                       </button>
                     </div>
                   ))}
+                </div>
+              </div>
+            )}
+
+            {/* SEÇÃO 9: FAQ (DÚVIDAS FREQUENTES) */}
+            {activeConfigSection === 'faq' && (
+              <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
+                    <HelpCircle className="w-5 h-5 text-[#F26522]" />
+                    <span>9. Perguntas Frequentes / FAQ ({faqs.length})</span>
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('faq')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('faq')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('faq') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Seção Exibida na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Seção Oculta na Página</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 space-y-3">
+                  <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider">
+                    Adicionar Nova Pergunta
+                  </h4>
+                  <input
+                    type="text"
+                    value={newFaqQuestion}
+                    onChange={(e) => setNewFaqQuestion(e.target.value)}
+                    placeholder="Pergunta (ex: Vocês entregam no Catolé?)"
+                    className="w-full px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none"
+                  />
+                  <textarea
+                    rows={2}
+                    value={newFaqAnswer}
+                    onChange={(e) => setNewFaqAnswer(e.target.value)}
+                    placeholder="Resposta clara para o cliente..."
+                    className="w-full p-3 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddFaq}
+                    className="px-4 py-2 bg-[#0B3B60] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer hover:bg-[#145388]"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Adicionar ao FAQ</span>
+                  </button>
+                </div>
+
+                <div className="space-y-3">
+                  {faqs.map((faq, idx) => (
+                    <div
+                      key={idx}
+                      className="p-4 rounded-2xl bg-slate-50/50 border border-slate-200 flex items-start justify-between gap-3"
+                    >
+                      <div>
+                        <h4 className="text-sm font-bold text-slate-900">{faq.question}</h4>
+                        <p className="text-xs text-slate-600 mt-1 leading-relaxed">{faq.answer}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveFaq(idx)}
+                        className="p-1.5 text-slate-400 hover:text-red-500 cursor-pointer"
+                        title="Remover pergunta"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* SEÇÃO 10: CTA FINAL (CHAMADA PARA AÇÃO) */}
+            {activeConfigSection === 'cta' && (
+              <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
+                    <Sparkles className="w-5 h-5 text-[#F26522]" />
+                    <span>10. Chamada para Ação Final (CTA de Fechamento)</span>
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('cta')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('cta')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('cta') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>CTA Exibido na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>CTA Oculto na Página</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Título Impactante da Chamada
+                    </label>
+                    <input
+                      type="text"
+                      value={ctaTitle}
+                      onChange={(e) => setCtaTitle(e.target.value)}
+                      placeholder={`Pronto para conversar com a equipe da ${name}?`}
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none font-semibold"
+                    />
+                    <p className="text-[11px] text-slate-500 mt-1">
+                      Aparece com destaque antes do rodapé para motivar o cliente a clicar no WhatsApp.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Subtítulo / Mensagem Convidativa
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={ctaSubtitle}
+                      onChange={(e) => setCtaSubtitle(e.target.value)}
+                      placeholder="Atendimento humanizado, orçamentos rápidos e as melhores ofertas de Campina Grande."
+                      className="w-full p-3.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SEÇÃO 11: CONTATO, LOCALIZAÇÃO & GOOGLE MAPS */}
+            {activeConfigSection === 'contact' && (
+              <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-[#F26522]" />
+                    <span>11. Contato, Localização & Google Maps</span>
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('contact')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('contact')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('contact') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Contato Exibido na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Contato Oculto na Página</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Endereço Completo (Rua, Número, Referência) *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={address}
+                      onChange={(e) => setAddress(e.target.value)}
+                      placeholder="ex: Rua Maciel Pinheiro, 120, Centro"
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Bairro em Campina Grande *
+                    </label>
+                    <select
+                      value={neighborhood}
+                      onChange={(e) => setNeighborhood(e.target.value)}
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none bg-white font-medium"
+                    >
+                      {NEIGHBORHOODS.filter((n) => n !== 'Todos os Bairros').map((n) => (
+                        <option key={n} value={n}>
+                          {n}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Telefone Fixo ou Celular Adicional
+                    </label>
+                    <input
+                      type="text"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
+                      placeholder="ex: (83) 3321-0000"
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Horário de Funcionamento
+                    </label>
+                    <input
+                      type="text"
+                      value={openingHours}
+                      onChange={(e) => setOpeningHours(e.target.value)}
+                      placeholder="ex: Seg a Sex: 08h às 18h | Sáb: 08h às 13h"
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Instagram (@perfil)
+                    </label>
+                    <input
+                      type="text"
+                      value={instagram}
+                      onChange={(e) => setInstagram(e.target.value)}
+                      placeholder="@minhaloja"
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
+                    />
+                  </div>
+
+                  <div className="sm:col-span-2">
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                      Website Oficial (Opcional)
+                    </label>
+                    <input
+                      type="url"
+                      value={website}
+                      onChange={(e) => setWebsite(e.target.value)}
+                      placeholder="https://..."
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* SEÇÃO 12: BOTÃO FLUTUANTE DE WHATSAPP */}
+            {activeConfigSection === 'floatingWhatsapp' && (
+              <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
+                    <MessageCircle className="w-5 h-5 text-emerald-600 fill-emerald-600" />
+                    <span>12. Botão Flutuante de WhatsApp (Contato Direto)</span>
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('floatingWhatsapp')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('floatingWhatsapp')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('floatingWhatsapp') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Botão Flutuante Ativo</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Botão Flutuante Oculto</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1.5">
+                      Número do WhatsApp Comercial Oficial (com DDD) *
+                    </label>
+                    <input
+                      type="text"
+                      required
+                      value={whatsapp}
+                      onChange={(e) => setWhatsapp(e.target.value)}
+                      placeholder="ex: (83) 99999-9999"
+                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border-2 border-emerald-500/40 focus:border-emerald-600 outline-none font-bold text-slate-900"
+                    />
+                    <p className="text-[11px] text-slate-500 mt-1">
+                      Este é o número que recebe os clientes vindos de todos os botões de contato, catálogo de produtos e botão flutuante.
+                    </p>
+                  </div>
+
+                  <div className="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 text-xs text-emerald-900 leading-relaxed">
+                    <p className="font-bold flex items-center gap-1.5 mb-1">
+                      <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                      <span>Como funciona o botão flutuante:</span>
+                    </p>
+                    <p>
+                      Ele fica fixado no canto inferior direito da tela e acompanha o visitante em todas as seções. Ao clicar, o cliente já abre a conversa no WhatsApp com uma mensagem personalizada sobre sua loja.
+                    </p>
+                  </div>
                 </div>
               </div>
             )}

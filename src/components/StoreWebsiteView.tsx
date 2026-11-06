@@ -119,6 +119,14 @@ export const StoreWebsiteView: React.FC<StoreWebsiteViewProps> = ({
     },
   ];
 
+  const benefits = store.highlights && store.highlights.length > 0
+    ? store.highlights.map((h, i) => ({
+        icon: defaultBenefits[i % defaultBenefits.length].icon,
+        title: h,
+        description: `Diferencial exclusivo oferecido com dedicação e excelência pela equipe da ${store.name}.`,
+      }))
+    : defaultBenefits;
+
   const defaultProcessSteps: StoreProcessStep[] = [
     {
       step: 1,
@@ -493,7 +501,7 @@ export const StoreWebsiteView: React.FC<StoreWebsiteViewProps> = ({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
-              {defaultBenefits.map((b, idx) => {
+              {benefits.map((b, idx) => {
                 const IconComp = b.icon;
                 return (
                   <div
