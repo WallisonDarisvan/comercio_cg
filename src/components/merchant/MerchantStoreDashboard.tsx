@@ -33,6 +33,7 @@ import {
   Tag,
   Award,
   Zap,
+  UploadCloud,
 } from 'lucide-react';
 import {
   CATEGORIES,
@@ -43,6 +44,8 @@ import {
   StoreFaqItem,
 } from '../../data/mockData';
 import { merchantUpdateMyStoreApi, MerchantUser } from '../../services/api';
+import { ImageUpload } from '../ImageUpload';
+import { processImageToWebP } from '../../utils/imageOptimizer';
 
 const AVAILABLE_PAGE_SECTIONS = [
   {
@@ -295,6 +298,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
       : [store.image, 'https://images.unsplash.com/photo-1441986300917-64674bd600d8?auto=format&fit=crop&w=800&q=80']
   );
   const [newGalleryUrl, setNewGalleryUrl] = useState('');
+  const [uploadingGallery, setUploadingGallery] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
@@ -380,6 +384,29 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
   };
 
   // Add/Remove Gallery Photo
+  const handleGalleryFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setUploadingGallery(true);
+    try {
+      const newUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        if (file.type.startsWith('image/')) {
+          const result = await processImageToWebP(file, { maxSizeKb: 150 });
+          newUrls.push(result.dataUrl);
+        }
+      }
+      if (newUrls.length > 0) {
+        setGallery((prev) => [...prev, ...newUrls]);
+      }
+    } catch (err: any) {
+      console.error('Erro ao converter fotos para WebP:', err);
+      alert('Erro ao converter imagem: ' + (err.message || 'Tente novamente.'));
+    } finally {
+      setUploadingGallery(false);
+    }
+  };
+
   const handleAddGalleryImage = () => {
     if (!newGalleryUrl.trim()) return;
     setGallery([...gallery, newGalleryUrl.trim()]);
@@ -1056,15 +1083,13 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                      Foto de Capa / Fachada (Hero Background URL)
-                    </label>
-                    <input
-                      type="url"
-                      required
+                    <ImageUpload
                       value={image}
-                      onChange={(e) => setImage(e.target.value)}
-                      className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
+                      onChange={setImage}
+                      label="Foto de Capa / Fachada da Loja (Hero Background) *"
+                      helperText="Esta é a imagem de capa principal da sua página. A foto é convertida para WebP de até 150 KB e salva no banco de dados."
+                      aspectRatio="banner"
+                      maxSizeKb={150}
                     />
                   </div>
 
@@ -1157,15 +1182,13 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                    Foto da Empresa / Equipe (URL da imagem)
-                  </label>
-                  <input
-                    type="url"
+                  <ImageUpload
                     value={aboutImage}
-                    onChange={(e) => setAboutImage(e.target.value)}
-                    placeholder="https://..."
-                    className="w-full px-3.5 py-2.5 text-sm rounded-xl border border-slate-200 focus:border-[#0B3B60] outline-none"
+                    onChange={setAboutImage}
+                    label="Foto da Empresa / Equipe / Fachada (Sobre Quem Somos)"
+                    helperText="Foto que ilustra a história e o espaço físico da empresa. Convertida automaticamente para WebP de até 150 KB e salva no banco de dados."
+                    aspectRatio="video"
+                    maxSizeKb={150}
                   />
                 </div>
 
@@ -1242,13 +1265,16 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                       placeholder="Descrição breve do item"
                       className="sm:col-span-2 px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none"
                     />
-                    <input
-                      type="url"
-                      value={newServiceImage}
-                      onChange={(e) => setNewServiceImage(e.target.value)}
-                      placeholder="URL da foto do produto (opcional)"
-                      className="sm:col-span-2 px-3.5 py-2 text-xs sm:text-sm rounded-xl border border-slate-200 bg-white outline-none"
-                    />
+                    <div className="sm:col-span-2">
+                      <ImageUpload
+                        value={newServiceImage}
+                        onChange={setNewServiceImage}
+                        label="Foto do Produto / Serviço (Opcional)"
+                        helperText="Foto ilustrativa para o card do WhatsApp. Convertida para WebP de até 150 KB e salva no banco de dados."
+                        aspectRatio="square"
+                        maxSizeKb={150}
+                      />
+                    </div>
                   </div>
                   <button
                     type="button"
@@ -1505,35 +1531,92 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
                   </button>
                 </div>
 
-                <div className="flex gap-2">
-                  <input
-                    type="url"
-                    value={newGalleryUrl}
-                    onChange={(e) => setNewGalleryUrl(e.target.value)}
-                    placeholder="URL da foto (ex: https://...)"
-                    className="flex-1 px-3.5 py-2.5 text-xs sm:text-sm rounded-xl border border-slate-200 outline-none"
-                  />
-                  <button
-                    type="button"
-                    onClick={handleAddGalleryImage}
-                    className="px-4 py-2.5 bg-[#0B3B60] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer hover:bg-[#145388]"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span>Adicionar Foto</span>
-                  </button>
+                {/* Gallery Upload Dropzone */}
+                <div className="space-y-3">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-2">
+                    <span className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                      Adicionar Fotos ao Portfólio ({gallery.length} fotos cadastradas)
+                    </span>
+                    <span className="text-[11px] font-semibold text-emerald-700 flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                      <Sparkles className="w-3 h-3 text-emerald-600" />
+                      <span>Conversão automática para WebP até 150 KB</span>
+                    </span>
+                  </div>
+
+                  <label className={`block border-2 border-dashed rounded-2xl p-5 sm:p-6 text-center cursor-pointer transition-all ${
+                    uploadingGallery ? 'border-emerald-500 bg-emerald-50/70 pointer-events-none' : 'border-slate-300 hover:border-[#0B3B60] bg-slate-50/50 hover:bg-white'
+                  }`}>
+                    <input
+                      type="file"
+                      multiple
+                      accept="image/png,image/jpeg,image/jpg,image/webp,image/avif"
+                      onChange={(e) => handleGalleryFiles(e.target.files)}
+                      className="hidden"
+                    />
+                    {uploadingGallery ? (
+                      <div className="flex flex-col items-center gap-2 py-2">
+                        <Loader2 className="w-8 h-8 text-emerald-600 animate-spin" />
+                        <span className="text-xs font-bold text-slate-800">
+                          Convertendo fotos selecionadas para WebP (máx 150 KB)...
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center gap-2">
+                        <div className="w-11 h-11 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-xs">
+                          <UploadCloud className="w-5 h-5 text-emerald-600" />
+                        </div>
+                        <div className="text-xs sm:text-sm font-bold text-slate-800">
+                          Clique aqui para selecionar uma ou mais fotos do seu dispositivo
+                        </div>
+                        <p className="text-[11px] text-slate-500">
+                          Formatos aceitos: JPG, PNG, WebP. Cada foto é convertida para WebP leve (&le; 150 KB) e salva no seu banco de dados.
+                        </p>
+                      </div>
+                    )}
+                  </label>
+
+                  {/* Fallback direct link input */}
+                  <div className="flex gap-2 pt-1">
+                    <input
+                      type="url"
+                      value={newGalleryUrl}
+                      onChange={(e) => setNewGalleryUrl(e.target.value)}
+                      placeholder="Ou cole uma URL direta da foto (https://...)"
+                      className="flex-1 px-3.5 py-2 text-xs rounded-xl border border-slate-200 outline-none bg-white"
+                    />
+                    <button
+                      type="button"
+                      onClick={handleAddGalleryImage}
+                      className="px-4 py-2 bg-[#0B3B60] hover:bg-[#145388] text-white text-xs font-bold rounded-xl flex items-center gap-1.5 cursor-pointer whitespace-nowrap"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Adicionar Link</span>
+                    </button>
+                  </div>
                 </div>
 
+                {/* Gallery Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
                   {gallery.map((url, idx) => (
                     <div
                       key={idx}
-                      className="relative aspect-video rounded-2xl overflow-hidden border border-slate-200 bg-slate-100 group"
+                      className="relative aspect-video rounded-2xl overflow-hidden border border-slate-200 bg-slate-900 group shadow-xs"
                     >
-                      <img src={url} alt={`Foto ${idx + 1}`} className="w-full h-full object-cover" />
+                      <img
+                        src={url}
+                        alt={`Foto ${idx + 1}`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/30 opacity-60 group-hover:opacity-90 transition-opacity" />
+
+                      <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/60 text-emerald-300 text-[10px] font-bold backdrop-blur-md">
+                        {url.startsWith('data:image/webp') ? 'WebP DB' : `Foto #${idx + 1}`}
+                      </span>
+
                       <button
                         type="button"
                         onClick={() => handleRemoveGalleryImage(idx)}
-                        className="absolute top-2 right-2 p-1.5 bg-red-600 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity cursor-pointer shadow-md"
+                        className="absolute top-2 right-2 p-1.5 bg-red-600/90 hover:bg-red-600 text-white rounded-lg transition-all cursor-pointer shadow-md"
                         title="Excluir foto"
                       >
                         <Trash2 className="w-3.5 h-3.5" />
