@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Star,
   MapPin,
@@ -10,8 +10,21 @@ import {
   Sparkles,
   Store as StoreIcon,
   Building2,
+  Shuffle,
+  ChevronLeft,
+  ChevronRight,
 } from 'lucide-react';
 import { Store } from '../data/mockData';
+
+// Função utilitária de Fisher-Yates para rotação/embaralhamento imparcial dos cards
+function shuffleArray<T>(array: T[]): T[] {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
 
 interface VitrineDestaquesTVProps {
   stores: Store[];
@@ -25,6 +38,37 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
   onOpenRegister,
 }) => {
   const [viewMode, setViewMode] = useState<'grid' | 'carousel'>('grid');
+  // Ordem dinâmica e rotativa dos cards (troca a cada recarregamento e troca de categoria/página)
+  const [shuffledStores, setShuffledStores] = useState<Store[]>(() => shuffleArray(stores));
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 12;
+
+  // Sincroniza e re-embaralha quando a lista de lojas recebida mudar (troca de categoria, filtro ou recarregamento)
+  useEffect(() => {
+    setShuffledStores(shuffleArray(stores));
+    setCurrentPage(1);
+  }, [stores]);
+
+  const handleRotateOrder = () => {
+    setShuffledStores(shuffleArray(stores));
+    setCurrentPage(1);
+  };
+
+  const totalPages = Math.max(1, Math.ceil(shuffledStores.length / itemsPerPage));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentStores =
+    viewMode === 'grid'
+      ? shuffledStores.slice(startIndex, startIndex + itemsPerPage)
+      : shuffledStores;
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage < 1 || newPage > totalPages) return;
+    setCurrentPage(newPage);
+    const vitrineEl = document.getElementById('vitrine-lojas');
+    if (vitrineEl) {
+      vitrineEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
 
   const handleWhatsappDirect = (e: React.MouseEvent, store: Store) => {
     e.stopPropagation();
@@ -59,8 +103,17 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
             </p>
           </div>
 
-          {/* View toggle (Grid / Carousel) */}
-          <div className="flex items-center gap-2 self-start sm:self-auto">
+          {/* View toggle (Grid / Carousel) & Shuffle Button */}
+          <div className="flex items-center gap-2 self-start sm:self-auto flex-wrap">
+            <button
+              onClick={handleRotateOrder}
+              className="px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-all bg-amber-50 hover:bg-amber-100 text-[#0B3B60] border border-amber-300 shadow-2xs active:scale-95 cursor-pointer min-h-[38px]"
+              title="Trocar e embaralhar a ordem dos comércios"
+            >
+              <Shuffle className="w-3.5 h-3.5 text-[#F26522]" />
+              <span className="font-bold">Girar Vitrine</span>
+            </button>
+
             <div className="flex items-center p-1 bg-white border border-slate-200 rounded-xl shadow-xs">
               <button
                 onClick={() => setViewMode('grid')}
@@ -110,7 +163,8 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
             </button>
           </div>
         ) : (
-          /* Stores Display: Grid or Carousel */
+          <>
+            {/* Stores Display: Grid or Carousel */}
           <div
             className={
               viewMode === 'grid'
@@ -118,7 +172,7 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
                 : 'flex gap-3 sm:gap-6 overflow-x-auto no-scrollbar pb-4 pt-1 snap-x touch-pan-x overscroll-x-contain'
             }
           >
-            {stores.map((store) => (
+            {currentStores.map((store) => (
               <div
                 key={store.id}
                 onClick={() => onSelectStore(store)}
@@ -196,6 +250,76 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
               </div>
             ))}
           </div>
+
+          {/* Paginação Dinâmica com Troca e Rotação de Cards */}
+          {viewMode === 'grid' && totalPages > 1 && (
+            <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4 pt-6 border-t border-slate-200">
+              <div className="text-xs sm:text-sm text-slate-500 font-medium">
+                Página <span className="font-bold text-[#0B3B60]">{currentPage}</span> de{' '}
+                <span className="font-bold text-[#0B3B60]">{totalPages}</span> · Mostrando{' '}
+                <span className="font-bold text-slate-800">{startIndex + 1}</span> a{' '}
+                <span className="font-bold text-slate-800">
+                  {Math.min(startIndex + itemsPerPage, shuffledStores.length)}
+                </span>{' '}
+                de <span className="font-bold text-slate-800">{shuffledStores.length}</span> comércios
+              </div>
+
+              <div className="flex items-center gap-1.5 flex-wrap justify-center">
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="px-3 py-2 rounded-xl text-xs font-bold border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 shadow-2xs cursor-pointer"
+                  title="Página Anterior"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  <span className="hidden sm:inline">Anterior</span>
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                  if (
+                    page === 1 ||
+                    page === totalPages ||
+                    (page >= currentPage - 1 && page <= currentPage + 1)
+                  ) {
+                    return (
+                      <button
+                        key={page}
+                        type="button"
+                        onClick={() => handlePageChange(page)}
+                        className={`w-9 h-9 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                          currentPage === page
+                            ? 'bg-[#0B3B60] text-white shadow-xs scale-105 ring-2 ring-[#0B3B60]/20'
+                            : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-100'
+                        }`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  } else if (page === currentPage - 2 || page === currentPage + 2) {
+                    return (
+                      <span key={page} className="px-1 text-slate-400 text-xs font-bold">
+                        ...
+                      </span>
+                    );
+                  }
+                  return null;
+                })}
+
+                <button
+                  type="button"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="px-3 py-2 rounded-xl text-xs font-bold border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all flex items-center gap-1 shadow-2xs cursor-pointer"
+                  title="Próxima Página"
+                >
+                  <span className="hidden sm:inline">Próxima</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          )}
+          </>
         )}
 
         {/* Trust banner below Vitrine */}

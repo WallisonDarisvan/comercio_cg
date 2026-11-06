@@ -115,6 +115,8 @@ export default function App() {
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // Rotação dinâmica automática da vitrine ao trocar de página/visualização
+  const [vitrineShuffleKey, setVitrineShuffleKey] = useState(0);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
@@ -362,6 +364,8 @@ export default function App() {
         store={selectedStore}
         onBack={() => {
           setSelectedStore(null);
+          // Ao voltar para a página inicial, gira automaticamente a ordem da vitrine
+          setVitrineShuffleKey((k) => k + 1);
           window.scrollTo({ top: 0, behavior: 'instant' });
         }}
         onOpenRegister={() => setIsRegisterOpen(true)}
@@ -410,9 +414,10 @@ export default function App() {
           />
         </div>
 
-        {/* 4. Vitrine de Empresas Recomendadas */}
+        {/* 4. Vitrine de Empresas Recomendadas (com rotação automática de cards) */}
         <div id="vitrine-lojas">
           <VitrineDestaquesTV
+            key={`vitrine-${vitrineShuffleKey}-${selectedCategory}-${selectedNeighborhood}`}
             stores={filteredStores}
             onSelectStore={(store) => setSelectedStore(store)}
             onOpenRegister={() => setIsRegisterOpen(true)}

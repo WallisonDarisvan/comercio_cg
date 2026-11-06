@@ -191,3 +191,4 @@ if (storesDataRegex.test(mockDataContent)) {
 } else {
   console.error('Regex para STORES_DATA não encontrou o array.');
 }
+
