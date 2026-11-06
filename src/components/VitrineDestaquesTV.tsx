@@ -4,7 +4,6 @@ import {
   MapPin,
   Tv,
   CheckCircle2,
-  Tag,
   Grid,
   Columns,
   Globe,
@@ -165,8 +164,8 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
                 <div className="p-4 sm:p-5 flex-1 flex flex-col justify-between">
                   <div>
                     {/* Store Title & Official Verified Badge */}
-                    <div className="flex items-start justify-between gap-2 mb-2">
-                      <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug group-hover:text-[#0B3B60] transition-colors">
+                    <div className="flex items-start justify-between gap-2 mb-1.5">
+                      <h3 className="text-base sm:text-lg font-bold text-slate-900 leading-snug group-hover:text-[#0B3B60] transition-colors line-clamp-1">
                         {store.name}
                       </h3>
                       {store.isVerifiedTv && (
@@ -176,19 +175,10 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
                       )}
                     </div>
 
-                    {/* Brief description */}
-                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-3">
+                    {/* Brief description (limite estrito de 2 linhas) */}
+                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4 min-h-[34px]">
                       {store.description}
                     </p>
-
-                    {/* Exclusive Promo / Differential Offer Box */}
-                    <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-slate-800 mb-4 flex items-start gap-2">
-                      <Tag className="w-3.5 h-3.5 text-[#F26522] shrink-0 mt-0.5" />
-                      <div className="leading-tight">
-                        <strong className="text-[#0B3B60] block font-semibold text-[11px]">Diferencial da TV:</strong>
-                        <span className="text-slate-700 text-[11px]">{store.offer}</span>
-                      </div>
-                    </div>
                   </div>
 
                   {/* Clean card micro-footer indicating clickable site */}
