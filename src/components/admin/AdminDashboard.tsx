@@ -75,7 +75,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
     subtitle: '',
     badge: '⭐ Patrocinador Master',
     mediaType: 'video',
-    mediaUrl: 'https://www.youtube.com/@TVBorborema/live',
+    mediaUrl: '',
     ctaText: 'Falar no WhatsApp',
     ctaWhatsapp: '5583999990000',
     validUntil: '31/12/2026',
@@ -150,7 +150,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       subtitle: '',
       badge: '⭐ Patrocinador Master',
       mediaType: 'video',
-      mediaUrl: 'https://www.youtube.com/@TVBorborema/live',
+      mediaUrl: '',
       ctaText: 'Falar no WhatsApp',
       ctaWhatsapp: '5583999990000',
       validUntil: '31/12/2026',
@@ -184,7 +184,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         subtitle: bannerForm.subtitle || '',
         badge: bannerForm.badge || '⭐ Patrocinador Master',
         mediaType: bannerForm.mediaType || 'video',
-        mediaUrl: bannerForm.mediaUrl || 'https://www.youtube.com/@TVBorborema/live',
+        mediaUrl: bannerForm.mediaUrl || '',
         ctaText: bannerForm.ctaText || 'Falar no WhatsApp',
         ctaWhatsapp: bannerForm.ctaWhatsapp || '5583999990000',
         status: bannerForm.status || 'active',
@@ -218,12 +218,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
       whatsapp: '5583999990000',
       description: '',
       offer: '',
-      tagTv: '⭐ Destaque no Comando Policial',
+      tagTv: '⭐ Destaque do Centro',
       rating: 5.0,
       reviewsCount: 15,
       image: '/src/assets/images/campina_tech_store_1793926202240.jpg',
-      featuredInShow: 'Comando Policial',
-      discountCoupon: 'BORBOREMA10',
+      featuredInShow: 'Destaque Comercial',
+      discountCoupon: 'CAMPINA10',
       isVerifiedTv: true,
       openingHours: 'Segunda a Sexta: 08:00 às 18:00',
       highlights: ['Atendimento Express', 'Parcelamento Facilitado'],
@@ -259,12 +259,12 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
         instagram: storeForm.instagram || '@comerciocampina',
         description: storeForm.description || '',
         offer: storeForm.offer || '',
-        tagTv: storeForm.tagTv || '⭐ Indicado na TV Borborema',
+        tagTv: storeForm.tagTv || '⭐ Empresa Recomendada',
         rating: 5.0,
         reviewsCount: 1,
         image: storeForm.image || '/src/assets/images/campina_tech_store_1793926202240.jpg',
-        featuredInShow: storeForm.featuredInShow || 'Comando Policial',
-        discountCoupon: storeForm.discountCoupon || 'BORBOREMA10',
+        featuredInShow: storeForm.featuredInShow || 'Destaque Comercial',
+        discountCoupon: storeForm.discountCoupon || 'CAMPINA10',
         isVerifiedTv: true,
         openingHours: storeForm.openingHours || '08:00 às 18:00',
         highlights: storeForm.highlights || ['Atendimento Oficial'],
@@ -300,7 +300,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
             </div>
             <div>
               <h2 className="text-xl font-bold">Área Administrativa</h2>
-              <p className="text-xs text-slate-400">Comércio Campina · TV Borborema</p>
+              <p className="text-xs text-slate-400">Comércio Campina · Painel de Gestão</p>
             </div>
           </div>
 
@@ -387,7 +387,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
               </div>
               <div>
                 <h1 className="text-sm font-bold tracking-tight">Painel de Gestão Comercial</h1>
-                <p className="text-[10px] text-slate-400">Comércio Campina · TV Borborema</p>
+                <p className="text-[10px] text-slate-400">Comércio Campina · Portal Oficial</p>
               </div>
             </div>
           </div>
@@ -617,7 +617,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                   Lojas & Comerciantes de Campina Grande
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Cadastre novos parceiros, altere telefones, endereços, ofertas e cotas de TV.
+                  Cadastre novos parceiros, altere telefones, endereços, ofertas e categorias.
                 </p>
               </div>
 
@@ -653,7 +653,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                       <th className="p-3.5">Categoria</th>
                       <th className="p-3.5">Bairro</th>
                       <th className="p-3.5">WhatsApp / Contato</th>
-                      <th className="p-3.5">Cota TV</th>
+                      <th className="p-3.5">Destaque</th>
                       <th className="p-3.5 text-right">Ações</th>
                     </tr>
                   </thead>
@@ -799,7 +799,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
 
                   <a
                     href={`https://wa.me/55${lead.whatsapp.replace(/\D/g, '')}?text=${encodeURIComponent(
-                      `Olá ${lead.ownerName}, tudo bem? Sou da equipe comercial do portal Comércio Campina / TV Borborema e recebi sua solicitação para a empresa ${lead.companyName}. Vamos agendar sua cota publicitária?`
+                      `Olá ${lead.ownerName}, tudo bem? Sou da equipe comercial do portal Comércio Campina e recebi sua solicitação para a empresa ${lead.companyName}. Vamos agendar sua adesão?`
                     )}`}
                     target="_blank"
                     rel="noreferrer"
@@ -873,7 +873,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                 Como funciona o Carrossel de Banners Patrocinados?
               </h3>
               <p className="text-xs sm:text-sm text-blue-100 leading-relaxed max-w-3xl">
-                O topo do portal agora funciona como um carrossel rotativo publicitário de alta conversão. Quando um comerciante fecha uma cota de mídia no portal ou na TV Borborema, você cadastra o banner na aba <strong>"Banners Rotativos"</strong>. Você pode configurar vídeo do YouTube (como o spot de TV do lojista) ou imagem de alta resolução com botão direto para o WhatsApp de vendas da loja.
+                O topo do portal funciona como um carrossel rotativo publicitário de alta conversão. Quando um comerciante fecha uma cota de mídia no portal, você cadastra o banner na aba <strong>"Banners Rotativos"</strong>. Você pode configurar vídeo do YouTube ou imagem de alta resolução com botão direto para o WhatsApp de vendas da loja.
               </p>
             </div>
 
@@ -947,7 +947,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     }
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#0B3B60]"
                   >
-                    <option value="video">Vídeo do YouTube (Spot da TV)</option>
+                    <option value="video">Vídeo Promocional do YouTube</option>
                     <option value="image">Imagem Publicitária</option>
                   </select>
                 </div>
@@ -1153,14 +1153,14 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({
                     type="text"
                     value={storeForm.discountCoupon || ''}
                     onChange={(e) => setStoreForm({ ...storeForm, discountCoupon: e.target.value })}
-                    placeholder="Ex: BORBOREMA10"
+                    placeholder="Ex: CAMPINA10"
                     className="w-full px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 focus:outline-none focus:border-[#0B3B60]"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block font-semibold mb-1">Diferencial / Oferta da TV</label>
+                <label className="block font-semibold mb-1">Diferencial / Oferta Especial</label>
                 <input
                   type="text"
                   value={storeForm.offer || ''}

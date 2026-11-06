@@ -12,7 +12,6 @@ import { StickyCTA } from './components/StickyCTA';
 import { Footer } from './components/Footer';
 import { StoreWebsiteView } from './components/StoreWebsiteView';
 import { MerchantRegistrationModal } from './components/MerchantRegistrationModal';
-import { TvScheduleModal } from './components/TvScheduleModal';
 import { DrawerMenu } from './components/DrawerMenu';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { AdminDashboard } from './components/admin/AdminDashboard';
@@ -39,19 +38,11 @@ export default function App() {
       const saved = localStorage.getItem('comercio_campina_banners');
       if (saved) {
         const parsed: CommercialBanner[] = JSON.parse(saved);
-        const mapped = parsed.map((b) =>
-          b.mediaUrl?.includes('@TVBorborema/live')
-            ? { ...b, mediaType: 'image' as const, mediaUrl: '/src/assets/images/campina_tech_store_1793926202240.jpg' }
-            : b
+        // Filtra banners legados que faziam alusão à TV
+        const filtered = parsed.filter(
+          (b) => b.id !== 'banner-tv-borborema-aovivo' && b.merchantId !== 'tv-borborema-live'
         );
-        const hasLiveBanner = mapped.some((b) => b.id === 'banner-tv-borborema-aovivo');
-        if (!hasLiveBanner) {
-          const liveBanner = INITIAL_BANNERS.find((b) => b.id === 'banner-tv-borborema-aovivo');
-          if (liveBanner) {
-            return [...mapped, liveBanner];
-          }
-        }
-        return mapped;
+        return filtered.length > 0 ? filtered : INITIAL_BANNERS;
       }
       return INITIAL_BANNERS;
     } catch {
@@ -91,7 +82,6 @@ export default function App() {
   // Modals & Drawers state
   const [selectedStore, setSelectedStore] = useState<Store | null>(null);
   const [isRegisterOpen, setIsRegisterOpen] = useState(false);
-  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const searchInputRef = useRef<HTMLInputElement>(null);
@@ -271,18 +261,20 @@ export default function App() {
         />
 
         {/* 3. Barra de Busca Inteligente & Categorias */}
-        <SearchAndCategories
-          searchTerm={searchTerm}
-          onSearchChange={setSearchTerm}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          selectedNeighborhood={selectedNeighborhood}
-          onSelectNeighborhood={setSelectedNeighborhood}
-          searchRef={searchInputRef}
-          totalResults={filteredStores.length}
-        />
+        <div id="busca-categorias">
+          <SearchAndCategories
+            searchTerm={searchTerm}
+            onSearchChange={setSearchTerm}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            selectedNeighborhood={selectedNeighborhood}
+            onSelectNeighborhood={setSelectedNeighborhood}
+            searchRef={searchInputRef}
+            totalResults={filteredStores.length}
+          />
+        </div>
 
-        {/* 4. Vitrine da TV ("Destaques Recomendados no Ar") */}
+        {/* 4. Vitrine de Empresas Recomendadas */}
         <div id="vitrine-lojas">
           <VitrineDestaquesTV
             stores={filteredStores}
@@ -292,10 +284,10 @@ export default function App() {
         </div>
       </main>
 
-      {/* 6. Barra Flutuante de Conversão (Sticky CTA) */}
+      {/* 5. Barra Flutuante de Conversão (Sticky CTA) */}
       <StickyCTA onOpenRegister={() => setIsRegisterOpen(true)} />
 
-      {/* 7. Navegação Móvel Inferior Ergonômica (Mobile Bottom Nav) */}
+      {/* 6. Navegação Móvel Inferior Ergonômica (Mobile Bottom Nav) */}
       <MobileBottomNav
         activeSection={activeSection}
         onNavigate={handleNavigate}
@@ -306,7 +298,6 @@ export default function App() {
       {/* Footer */}
       <Footer
         onOpenRegister={() => setIsRegisterOpen(true)}
-        onOpenSchedule={() => setIsScheduleOpen(true)}
         onOpenAdmin={() => setIsAdminOpen(true)}
       />
 
@@ -317,16 +308,9 @@ export default function App() {
         onLeadSubmitted={handleLeadSubmitted}
       />
 
-      <TvScheduleModal
-        isOpen={isScheduleOpen}
-        onClose={() => setIsScheduleOpen(false)}
-        onOpenRegister={() => setIsRegisterOpen(false)}
-      />
-
       <DrawerMenu
         isOpen={isMenuOpen}
         onClose={() => setIsMenuOpen(false)}
-        onOpenSchedule={() => setIsScheduleOpen(true)}
         onOpenRegister={() => setIsRegisterOpen(true)}
         onSelectNeighborhood={(n) => setSelectedNeighborhood(n)}
         onOpenAdmin={() => setIsAdminOpen(true)}

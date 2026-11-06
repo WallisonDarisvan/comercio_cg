@@ -7,7 +7,6 @@ import {
   Clock,
   Star,
   CheckCircle2,
-  Tv,
   Tag,
   Copy,
   Check,
@@ -15,6 +14,7 @@ import {
   ShieldCheck,
   ChevronRight,
   Navigation,
+  Sparkles,
 } from 'lucide-react';
 import { Store } from '../data/mockData';
 
@@ -79,9 +79,9 @@ export const StoreWebsiteView: React.FC<StoreWebsiteViewProps> = ({
 
           <div className="max-w-3xl">
             
-            {/* TV Badge */}
+            {/* Highlight Badge */}
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-[#F26522] to-amber-500 text-white text-xs font-bold shadow-md mb-4">
-              <Tv className="w-3.5 h-3.5 fill-white text-white" />
+              <Sparkles className="w-3.5 h-3.5 fill-white text-white" />
               <span>{store.tagTv}</span>
             </div>
 
@@ -155,13 +155,13 @@ export const StoreWebsiteView: React.FC<StoreWebsiteViewProps> = ({
               </div>
               <div>
                 <span className="inline-block px-2.5 py-0.5 rounded-full bg-orange-100 text-[#F26522] text-[11px] font-extrabold uppercase tracking-wider mb-1">
-                  Oferta Validada na Televisão
+                  Oferta Exclusiva no Portal
                 </span>
                 <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 leading-snug">
                   {store.offer}
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 mt-1">
-                  Exclusivo para clientes que entrarem em contato pelo portal Comércio Campina / TV Borborema.
+                  Exclusivo para clientes que entrarem em contato pelo portal Comércio Campina.
                 </p>
               </div>
             </div>
@@ -385,7 +385,7 @@ export const StoreWebsiteView: React.FC<StoreWebsiteViewProps> = ({
           <div>
             <span className="font-bold text-white">{store.name}</span> · {store.category}
             <p className="mt-0.5">
-              Empresa participante do portal regional Comércio Campina & TV Borborema Canal 9.1 HD.
+              Empresa participante do guia comercial oficial Comércio Campina · Campina Grande - PB.
             </p>
           </div>
 

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import {
   X,
-  Tv,
   CheckCircle2,
   Sparkles,
   ArrowRight,
@@ -26,7 +25,7 @@ export const MerchantRegistrationModal: React.FC<MerchantRegistrationModalProps>
   onClose,
   onLeadSubmitted,
 }) => {
-  const [selectedPlanId, setSelectedPlanId] = useState('prata-tv');
+  const [selectedPlanId, setSelectedPlanId] = useState('plano-prata');
   const [companyName, setCompanyName] = useState('');
   const [contactName, setContactName] = useState('');
   const [whatsapp, setWhatsapp] = useState('');
@@ -43,7 +42,7 @@ export const MerchantRegistrationModal: React.FC<MerchantRegistrationModalProps>
 
     setTimeout(() => {
       const randomCode = Math.floor(1000 + Math.random() * 9000);
-      const protocol = `CC-BORB-${randomCode}`;
+      const protocol = `CC-LOJA-${randomCode}`;
       const selectedPlan = COMMERCIAL_PLANS.find((p) => p.id === selectedPlanId);
       const catObj = CATEGORIES.find((c) => c.id === category);
 
@@ -55,7 +54,7 @@ export const MerchantRegistrationModal: React.FC<MerchantRegistrationModalProps>
           whatsapp: whatsapp || '(83) 99999-0000',
           category: catObj ? catObj.name : 'Geral',
           neighborhood: neighborhood || 'Centro',
-          selectedPlan: selectedPlan?.name || 'Combo Portal + TV',
+          selectedPlan: selectedPlan?.name || 'Destaque na Categoria',
           createdAt: 'Agora mesmo',
           status: 'novo',
           notes: `Protocolo gerado: ${protocol}`,
@@ -70,7 +69,7 @@ export const MerchantRegistrationModal: React.FC<MerchantRegistrationModalProps>
   const handleWhatsappCommercial = () => {
     const selectedPlan = COMMERCIAL_PLANS.find((p) => p.id === selectedPlanId);
     const msg = encodeURIComponent(
-      `Olá Depto. Comercial Comércio Campina / TV Borborema!\n` +
+      `Olá Depto. Comercial Comércio Campina!\n` +
       `Gostaria de confirmar a adesão com 50% OFF para minha empresa:\n` +
       `Empresa: ${companyName}\n` +
       `Responsável: ${contactName}\n` +
@@ -105,7 +104,7 @@ export const MerchantRegistrationModal: React.FC<MerchantRegistrationModalProps>
         <div className="p-4 sm:p-6 pt-5 sm:pt-6 bg-gradient-to-r from-[#0B3B60] via-[#124d7c] to-[#F26522] text-white shrink-0 relative">
           <button
             onClick={resetAndClose}
-            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors min-h-[44px] min-w-[44px]"
+            className="absolute top-4 right-4 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors min-h-[44px] min-w-[44px] cursor-pointer"
             aria-label="Fechar"
           >
             <X className="w-5 h-5" />
@@ -113,19 +112,19 @@ export const MerchantRegistrationModal: React.FC<MerchantRegistrationModalProps>
 
           <div className="flex items-center gap-2 mb-2">
             <span className="px-2.5 py-0.5 rounded-full bg-amber-400 text-slate-950 text-[11px] font-extrabold uppercase tracking-tight shadow-sm">
-              50% OFF · MEMBROS FUNDADORES
+              50% OFF · PLANOS FUNDADORES
             </span>
             <span className="text-xs text-blue-100 flex items-center gap-1 font-medium">
-              <Tv className="w-3.5 h-3.5 text-amber-300" />
-              Parceria TV Borborema
+              <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+              Comércio Campina Oficial
             </span>
           </div>
 
           <h2 className="text-xl sm:text-2xl font-extrabold text-white leading-tight">
-            Coloque Sua Loja na TV e no Portal Regional
+            Coloque Sua Loja em Destaque no Portal Regional
           </h2>
           <p className="text-xs sm:text-sm text-blue-100 mt-1 max-w-xl">
-            Aumente o fluxo de clientes na sua loja física e multiplique vendas pelo WhatsApp com a maior audiência do varejo em Campina Grande.
+            Aumente o fluxo de clientes na sua empresa e multiplique vendas com o portal de maior presença comercial em Campina Grande.
           </p>
         </div>
 
@@ -152,21 +151,21 @@ export const MerchantRegistrationModal: React.FC<MerchantRegistrationModalProps>
                 <span className="text-slate-500 block uppercase font-medium text-[10px]">Número de Protocolo:</span>
                 <span className="font-mono font-bold text-lg text-[#0B3B60]">{submittedProtocol}</span>
                 <p className="text-[11px] text-slate-500 mt-1">
-                  Nossa equipe de consultores da TV Borborema entrará em contato em instantes pelo WhatsApp.
+                  Nossa equipe de atendimento do Comércio Campina entrará em contato em instantes pelo WhatsApp.
                 </p>
               </div>
 
               <div className="pt-2 flex flex-col sm:flex-row gap-3 justify-center">
                 <button
                   onClick={handleWhatsappCommercial}
-                  className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 min-h-[44px]"
+                  className="px-6 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs sm:text-sm transition-all shadow-md flex items-center justify-center gap-2 min-h-[44px] cursor-pointer"
                 >
                   <Send className="w-4 h-4" />
                   <span>Finalizar Atendimento Imediato no WhatsApp</span>
                 </button>
                 <button
                   onClick={resetAndClose}
-                  className="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors min-h-[44px]"
+                  className="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition-colors min-h-[44px] cursor-pointer"
                 >
                   Fechar Janela
                 </button>
@@ -342,7 +341,7 @@ export const MerchantRegistrationModal: React.FC<MerchantRegistrationModalProps>
               {/* Guarantees note */}
               <div className="p-3 bg-blue-50/70 border border-blue-100 rounded-xl flex items-center gap-2.5 text-xs text-[#0B3B60]">
                 <ShieldCheck className="w-4 h-4 text-blue-600 shrink-0" />
-                <span>Sem taxa de adesão e sem fidelidade obrigatória. Você receberá o kit de divulgação oficial da TV Borborema.</span>
+                <span>Sem taxa de adesão e sem fidelidade obrigatória. Sua empresa receberá selo de verificação e destaque imediato no portal.</span>
               </div>
 
               {/* Submit CTA */}

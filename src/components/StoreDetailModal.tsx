@@ -6,7 +6,7 @@ import {
   Clock,
   Phone,
   MessageCircle,
-  Tv,
+  Sparkles,
   CheckCircle2,
   Copy,
   Check,
@@ -40,7 +40,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
 
   const handleOpenWhatsapp = () => {
     const msg = encodeURIComponent(
-      `Olá! Encontrei a ${store.name} no portal Comércio Campina / TV Borborema e quero aproveitar a oferta especial!`
+      `Olá! Encontrei a ${store.name} no portal Comércio Campina e quero aproveitar a oferta especial!`
     );
     window.open(`https://wa.me/${store.whatsapp}?text=${msg}`, '_blank');
   };
@@ -81,10 +81,10 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
             <X className="w-5 h-5" />
           </button>
 
-          {/* TV Endorsement Badge */}
+          {/* Endorsement Badge */}
           <div className="absolute top-3 left-3">
             <span className="px-3 py-1 rounded-full bg-gradient-to-r from-[#F26522] to-amber-500 text-white text-xs font-bold shadow-md flex items-center gap-1.5">
-              <Tv className="w-3.5 h-3.5 fill-white text-white" />
+              <Sparkles className="w-3.5 h-3.5 fill-white text-white" />
               {store.tagTv}
             </span>
           </div>
@@ -108,7 +108,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
         {/* Scrollable Body */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-5 text-slate-700">
           
-          {/* Quick Metrics & TV Show Mention */}
+          {/* Quick Metrics */}
           <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs">
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1 text-amber-500 font-bold text-sm">
@@ -119,8 +119,8 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
             </div>
 
             <div className="flex items-center gap-1.5 text-[#0B3B60] font-semibold">
-              <Tv className="w-3.5 h-3.5 text-[#F26522]" />
-              <span>Programa: {store.featuredInShow}</span>
+              <Sparkles className="w-3.5 h-3.5 text-[#F26522]" />
+              <span>Destaque: {store.category}</span>
             </div>
           </div>
 
@@ -138,7 +138,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
           <div className="p-4 rounded-2xl bg-gradient-to-br from-amber-50 to-orange-50/60 border border-amber-200">
             <div className="flex items-center gap-2 text-xs font-bold text-[#F26522] uppercase tracking-wide mb-1">
               <Tag className="w-4 h-4 text-[#F26522]" />
-              <span>Oferta Especial da TV Borborema</span>
+              <span>Oferta Especial Comércio Campina</span>
             </div>
             <p className="text-sm font-semibold text-slate-900 mb-3">
               {store.offer}

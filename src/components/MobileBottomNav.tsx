@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Tv, Store, PlusCircle } from 'lucide-react';
+import { Home, Search, Store, PlusCircle } from 'lucide-react';
 
 interface MobileBottomNavProps {
   activeSection: string;
@@ -32,18 +32,15 @@ export const MobileBottomNav: React.FC<MobileBottomNavProps> = ({
           <span className="text-[10px] font-semibold tracking-tight mt-0.5">Início</span>
         </button>
 
-        {/* Tab 2: TV Ao Vivo */}
+        {/* Tab 2: Buscar & Categorias */}
         <button
-          onClick={() => onNavigate('tv-ao-vivo')}
+          onClick={() => onNavigate('busca-categorias')}
           className={`relative flex flex-col items-center justify-center py-1 transition-transform active:scale-90 min-h-[44px] min-w-[44px] ${
-            activeSection === 'tv-ao-vivo' ? 'text-rose-600' : 'text-slate-500 hover:text-slate-800'
+            activeSection === 'busca-categorias' ? 'text-[#0B3B60]' : 'text-slate-500 hover:text-slate-800'
           }`}
         >
-          <div className="relative">
-            <Tv className={`w-5 h-5 ${activeSection === 'tv-ao-vivo' ? 'stroke-[2.5]' : 'stroke-2'}`} />
-            <span className="absolute -top-0.5 -right-1 w-2 h-2 rounded-full bg-rose-600 animate-pulse" />
-          </div>
-          <span className="text-[10px] font-semibold tracking-tight mt-0.5">Ao Vivo</span>
+          <Search className={`w-5 h-5 ${activeSection === 'busca-categorias' ? 'stroke-[2.5]' : 'stroke-2'}`} />
+          <span className="text-[10px] font-semibold tracking-tight mt-0.5">Buscar</span>
         </button>
 
         {/* Tab 3: Vitrine Lojas */}
