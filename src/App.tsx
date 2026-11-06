@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Header } from './components/Header';
 import { CommercialHeroBanner } from './components/CommercialHeroBanner';
 import { SearchAndCategories } from './components/SearchAndCategories';
@@ -24,6 +24,13 @@ import {
   INITIAL_LEADS,
   LeadSubmission,
 } from './data/mockData';
+import {
+  fetchBannersApi,
+  fetchStoresApi,
+  fetchLeadsApi,
+  updateBannersApi,
+  createLeadApi,
+} from './services/api';
 
 export default function App() {
   // Banners state (persisted in localStorage)
@@ -89,10 +96,44 @@ export default function App() {
 
   const searchInputRef = useRef<HTMLInputElement>(null);
 
-  // Sync state to localStorage
+  // Carregar dados da API (PostgreSQL) se disponível, mantendo fallback resiliente
+  useEffect(() => {
+    let isMounted = true;
+    async function syncWithApi() {
+      try {
+        const [apiBanners, apiStores, apiLeads] = await Promise.all([
+          fetchBannersApi(),
+          fetchStoresApi(),
+          fetchLeadsApi(),
+        ]);
+        if (!isMounted) return;
+        if (apiBanners && apiBanners.length > 0) {
+          setBanners(apiBanners);
+          localStorage.setItem('comercio_campina_banners', JSON.stringify(apiBanners));
+        }
+        if (apiStores && apiStores.length > 0) {
+          setStores(apiStores);
+          localStorage.setItem('comercio_campina_stores', JSON.stringify(apiStores));
+        }
+        if (apiLeads && apiLeads.length > 0) {
+          setLeads(apiLeads);
+          localStorage.setItem('comercio_campina_leads', JSON.stringify(apiLeads));
+        }
+      } catch (err) {
+        console.warn('Backend offline ou inacessível, utilizando dados locais/cache.');
+      }
+    }
+    syncWithApi();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  // Sync state to localStorage & API
   const handleUpdateBanners = (newBanners: CommercialBanner[]) => {
     setBanners(newBanners);
     localStorage.setItem('comercio_campina_banners', JSON.stringify(newBanners));
+    updateBannersApi(newBanners).catch(() => {});
   };
 
   const handleUpdateStores = (newStores: Store[]) => {
@@ -109,6 +150,7 @@ export default function App() {
     const updated = [newLead, ...leads];
     setLeads(updated);
     localStorage.setItem('comercio_campina_leads', JSON.stringify(updated));
+    createLeadApi(newLead).catch(() => {});
   };
 
   const handleFocusSearch = () => {
