@@ -11,26 +11,63 @@ import {
 export async function seedDb() {
   const client = await pool.connect();
   try {
-    // 1. Check & seed stores
-    const { rows: storeRows } = await client.query('SELECT COUNT(*) FROM stores');
-    if (parseInt(storeRows[0].count, 10) === 0) {
-      console.log('[DB] Populando tabela stores...');
-      for (const s of STORES_DATA) {
-        await client.query(`
-          INSERT INTO stores (
-            id, name, category, category_id, image, tag_tv, description, offer, rating,
-            reviews_count, neighborhood, address, phone, whatsapp, instagram, featured_in_show,
-            discount_coupon, highlights, is_verified_tv, opening_hours, website
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
-          ON CONFLICT (id) DO NOTHING
-        `, [
-          s.id, s.name, s.category, s.categoryId, s.image, s.tagTv, s.description, s.offer, s.rating,
-          s.reviewsCount, s.neighborhood, s.address, s.phone, s.whatsapp, s.instagram, s.featuredInShow,
-          s.discountCoupon || null, JSON.stringify(s.highlights || []), s.isVerifiedTv, s.openingHours, s.website || null
-        ]);
-      }
-      console.log(`[DB] ${STORES_DATA.length} lojas inseridas.`);
+    // 1. Check & seed stores (garante que todas as 100 lojas estejam presentes)
+    console.log(`[DB] Sincronizando tabela stores (${STORES_DATA.length} lojas)...`);
+    for (const s of STORES_DATA) {
+      await client.query(`
+        INSERT INTO stores (
+          id, name, category, category_id, image, tag_tv, description, offer, rating,
+          reviews_count, neighborhood, address, phone, whatsapp, instagram, featured_in_show,
+          discount_coupon, highlights, is_verified_tv, opening_hours, website,
+          about_text, about_image, services, testimonials, gallery, process_steps, faq,
+          cta_title, cta_subtitle, visible_sections
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10,
+          $11, $12, $13, $14, $15, $16, $17, $18, $19, $20,
+          $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31
+        )
+        ON CONFLICT (id) DO UPDATE SET
+          name = EXCLUDED.name,
+          category = EXCLUDED.category,
+          category_id = EXCLUDED.category_id,
+          image = EXCLUDED.image,
+          tag_tv = EXCLUDED.tag_tv,
+          description = EXCLUDED.description,
+          offer = EXCLUDED.offer,
+          rating = EXCLUDED.rating,
+          reviews_count = EXCLUDED.reviews_count,
+          neighborhood = EXCLUDED.neighborhood,
+          address = EXCLUDED.address,
+          phone = EXCLUDED.phone,
+          whatsapp = EXCLUDED.whatsapp,
+          instagram = EXCLUDED.instagram,
+          featured_in_show = EXCLUDED.featured_in_show,
+          discount_coupon = EXCLUDED.discount_coupon,
+          highlights = EXCLUDED.highlights,
+          is_verified_tv = EXCLUDED.is_verified_tv,
+          opening_hours = EXCLUDED.opening_hours,
+          website = EXCLUDED.website,
+          about_text = COALESCE(stores.about_text, EXCLUDED.about_text),
+          about_image = COALESCE(stores.about_image, EXCLUDED.about_image),
+          services = CASE WHEN stores.services IS NULL OR stores.services = '[]'::jsonb THEN EXCLUDED.services ELSE stores.services END,
+          testimonials = CASE WHEN stores.testimonials IS NULL OR stores.testimonials = '[]'::jsonb THEN EXCLUDED.testimonials ELSE stores.testimonials END,
+          gallery = CASE WHEN stores.gallery IS NULL OR stores.gallery = '[]'::jsonb THEN EXCLUDED.gallery ELSE stores.gallery END,
+          process_steps = CASE WHEN stores.process_steps IS NULL OR stores.process_steps = '[]'::jsonb THEN EXCLUDED.process_steps ELSE stores.process_steps END,
+          faq = CASE WHEN stores.faq IS NULL OR stores.faq = '[]'::jsonb THEN EXCLUDED.faq ELSE stores.faq END,
+          cta_title = COALESCE(stores.cta_title, EXCLUDED.cta_title),
+          cta_subtitle = COALESCE(stores.cta_subtitle, EXCLUDED.cta_subtitle),
+          visible_sections = CASE WHEN stores.visible_sections IS NULL OR stores.visible_sections = '{}'::jsonb THEN EXCLUDED.visible_sections ELSE stores.visible_sections END
+      `, [
+        s.id, s.name, s.category, s.categoryId, s.image, s.tagTv, s.description, s.offer, s.rating,
+        s.reviewsCount, s.neighborhood, s.address, s.phone, s.whatsapp, s.instagram, s.featuredInShow,
+        s.discountCoupon || null, JSON.stringify(s.highlights || []), s.isVerifiedTv, s.openingHours, s.website || null,
+        s.aboutText || null, s.aboutImage || null, JSON.stringify(s.services || []),
+        JSON.stringify(s.testimonials || []), JSON.stringify(s.gallery || []),
+        JSON.stringify(s.processSteps || []), JSON.stringify(s.faq || []),
+        s.ctaTitle || null, s.ctaSubtitle || null, JSON.stringify(s.visibleSections || {})
+      ]);
     }
+    console.log(`[DB] Todas as ${STORES_DATA.length} lojas sincronizadas.`);
 
     // 2. Check & seed banners
     const { rows: bannerRows } = await client.query('SELECT COUNT(*) FROM banners');
@@ -122,9 +159,14 @@ export async function seedDb() {
         passwordHash,
         salt,
         '83998881234',
-        'store-1'
+        'tudo-celular-cg'
       ]);
       console.log('[DB] Lojista demo criado: lojista@comerciocg.com.br / lojista123');
+    } else {
+      // Atualizar demo merchant para garantir associação com tudo-celular-cg
+      await client.query(`
+        UPDATE merchants SET store_id = 'tudo-celular-cg' WHERE id = 'merchant-demo-1' AND (store_id = 'store-1' OR store_id IS NULL)
+      `);
     }
   } finally {
     client.release();

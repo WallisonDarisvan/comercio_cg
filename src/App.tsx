@@ -55,11 +55,18 @@ export default function App() {
     }
   });
 
-  // Stores state (persisted in localStorage)
+  // Stores state (persisted in localStorage com fallback e migração automática para as 100 lojas)
   const [stores, setStores] = useState<Store[]>(() => {
     try {
       const saved = localStorage.getItem('comercio_campina_stores');
-      return saved ? JSON.parse(saved) : STORES_DATA;
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed) && parsed.length >= STORES_DATA.length) {
+          return parsed;
+        }
+      }
+      localStorage.setItem('comercio_campina_stores', JSON.stringify(STORES_DATA));
+      return STORES_DATA;
     } catch {
       return STORES_DATA;
     }
