@@ -176,7 +176,7 @@ export const VitrineDestaquesTV: React.FC<VitrineDestaquesTVProps> = ({
                     </div>
 
                     {/* Brief description (limite estrito de 2 linhas) */}
-                    <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed mb-4 min-h-[34px]">
+                    <p className="text-xs text-slate-600 line-clamp-2 leading-5 h-10 overflow-hidden mb-4">
                       {store.description}
                     </p>
                   </div>

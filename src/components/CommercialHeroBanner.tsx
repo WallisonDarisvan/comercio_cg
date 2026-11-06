@@ -193,7 +193,7 @@ export const CommercialHeroBanner: React.FC<CommercialHeroBannerProps> = ({
               </h3>
 
               {/* Subtitle / Differential */}
-              <p className="text-[11px] sm:text-xs lg:text-sm text-slate-200 lg:text-slate-300 leading-relaxed line-clamp-2 sm:line-clamp-3">
+              <p className="text-[11px] sm:text-xs lg:text-sm text-slate-200 lg:text-slate-300 leading-relaxed line-clamp-2">
                 {currentBanner.subtitle}
               </p>
             </div>
