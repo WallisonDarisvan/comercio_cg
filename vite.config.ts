@@ -19,6 +19,14 @@ export default defineConfig(() => {
         '/api': {
           target: 'http://localhost:3001',
           changeOrigin: true,
+          configure: (proxy) => {
+            proxy.on('error', (_err, _req, res) => {
+              if (res && 'writeHead' in res && !(res as any).headersSent) {
+                (res as any).writeHead(503, { 'Content-Type': 'application/json' });
+                (res as any).end(JSON.stringify({ offline: true, message: 'Servidor local não iniciado. Operando com dados locais.' }));
+              }
+            });
+          },
         },
       },
       // HMR is disabled in AI Studio via DISABLE_HMR env var.
