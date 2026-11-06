@@ -265,86 +265,88 @@ export const StoreWebsiteView: React.FC<StoreWebsiteViewProps> = ({
       </header>
 
       {/* 2. HERO SECTION COM IDENTIDADE E CTA */}
-      <section id="hero" className="relative bg-slate-950 text-white overflow-hidden">
-        {/* Full-width Cover Photo Backdrop */}
-        <div className="absolute inset-0 z-0">
-          <img
-            src={store.image}
-            alt={store.name}
-            referrerPolicy="no-referrer"
-            className="w-full h-full object-cover opacity-35 scale-105"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/40" />
-        </div>
-
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-12 sm:pb-20">
-          <div className="max-w-3xl">
-            
-            {/* Tag Badge */}
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-[#F26522] to-amber-500 text-white text-xs font-bold shadow-md mb-4">
-              <Sparkles className="w-3.5 h-3.5 fill-white text-white" />
-              <span>{store.category} · Empresa Verificada em Campina Grande</span>
-            </div>
-
-            {/* Main Title */}
-            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-4">
-              {store.name}
-            </h1>
-
-            {/* Subtitle / Value Prop */}
-            <p className="text-base sm:text-xl text-slate-200 leading-relaxed mb-6 font-normal">
-              {store.description}
-            </p>
-
-            {/* Chips: Rating, Neighborhood, Hours */}
-            <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 mb-8 text-xs sm:text-sm text-slate-200">
-              <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
-                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                <span className="font-bold text-white">{store.rating ? store.rating.toFixed(1) : '5.0'}</span>
-                <span className="text-slate-400 text-xs">({store.reviewsCount || 12} avaliações)</span>
-              </div>
-
-              <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
-                <MapPin className="w-4 h-4 text-[#F26522]" />
-                <span>{store.neighborhood}, Campina Grande - PB</span>
-              </div>
-
-              <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
-                <Clock className="w-4 h-4 text-emerald-400" />
-                <span className="text-emerald-300 font-medium">Aberto Hoje</span>
-              </div>
-            </div>
-
-            {/* Primary Action Buttons */}
-            <div className="flex flex-wrap items-center gap-3">
-              <button
-                onClick={() => handleOpenWhatsapp()}
-                className="w-full sm:w-auto py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-sm sm:text-base font-extrabold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
-              >
-                <MessageCircle className="w-5 h-5 fill-white shrink-0" />
-                <span>Iniciar Atendimento no WhatsApp</span>
-              </button>
-
-              <button
-                onClick={handleOpenMaps}
-                className="flex-1 sm:flex-initial py-3.5 px-5 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all border border-white/20 flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
-              >
-                <Navigation className="w-4 h-4 text-amber-300 shrink-0" />
-                <span>Como Chegar (GPS)</span>
-              </button>
-
-              <a
-                href="#produtos"
-                className="flex-1 sm:flex-initial py-3.5 px-5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all border border-white/15 flex items-center justify-center gap-2 min-h-[48px]"
-              >
-                <ShoppingBag className="w-4 h-4 shrink-0 text-amber-400" />
-                <span>Ver Produtos / Ofertas</span>
-              </a>
-            </div>
-
+      {isSectionVisible('hero') && (
+        <section id="hero" className="relative bg-slate-950 text-white overflow-hidden">
+          {/* Full-width Cover Photo Backdrop */}
+          <div className="absolute inset-0 z-0">
+            <img
+              src={store.image}
+              alt={store.name}
+              referrerPolicy="no-referrer"
+              className="w-full h-full object-cover opacity-35 scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/75 to-slate-950/40" />
           </div>
-        </div>
-      </section>
+
+          <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-14 pb-12 sm:pb-20">
+            <div className="max-w-3xl">
+              
+              {/* Tag Badge */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-[#F26522] to-amber-500 text-white text-xs font-bold shadow-md mb-4">
+                <Sparkles className="w-3.5 h-3.5 fill-white text-white" />
+                <span>{store.category} · Empresa Verificada em Campina Grande</span>
+              </div>
+
+              {/* Main Title */}
+              <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight leading-tight mb-4">
+                {store.name}
+              </h1>
+
+              {/* Subtitle / Value Prop */}
+              <p className="text-base sm:text-xl text-slate-200 leading-relaxed mb-6 font-normal">
+                {store.description}
+              </p>
+
+              {/* Chips: Rating, Neighborhood, Hours */}
+              <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 mb-8 text-xs sm:text-sm text-slate-200">
+                <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
+                  <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                  <span className="font-bold text-white">{store.rating ? store.rating.toFixed(1) : '5.0'}</span>
+                  <span className="text-slate-400 text-xs">({store.reviewsCount || 12} avaliações)</span>
+                </div>
+
+                <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
+                  <MapPin className="w-4 h-4 text-[#F26522]" />
+                  <span>{store.neighborhood}, Campina Grande - PB</span>
+                </div>
+
+                <div className="flex items-center gap-1.5 bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-xl border border-white/10">
+                  <Clock className="w-4 h-4 text-emerald-400" />
+                  <span className="text-emerald-300 font-medium">Aberto Hoje</span>
+                </div>
+              </div>
+
+              {/* Primary Action Buttons */}
+              <div className="flex flex-wrap items-center gap-3">
+                <button
+                  onClick={() => handleOpenWhatsapp()}
+                  className="w-full sm:w-auto py-3.5 px-6 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-95 text-white text-sm sm:text-base font-extrabold transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
+                >
+                  <MessageCircle className="w-5 h-5 fill-white shrink-0" />
+                  <span>Iniciar Atendimento no WhatsApp</span>
+                </button>
+
+                <button
+                  onClick={handleOpenMaps}
+                  className="flex-1 sm:flex-initial py-3.5 px-5 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all border border-white/20 flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
+                >
+                  <Navigation className="w-4 h-4 text-amber-300 shrink-0" />
+                  <span>Como Chegar (GPS)</span>
+                </button>
+
+                <a
+                  href="#produtos"
+                  className="flex-1 sm:flex-initial py-3.5 px-5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-white text-xs sm:text-sm font-semibold transition-all border border-white/15 flex items-center justify-center gap-2 min-h-[48px]"
+                >
+                  <ShoppingBag className="w-4 h-4 shrink-0 text-amber-400" />
+                  <span>Ver Produtos / Ofertas</span>
+                </a>
+              </div>
+
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* 3. SEÇÃO DE OFERTA EXCLUSIVA & CUPOM DE DESCONTO */}
       {isSectionVisible('offer') && (

@@ -46,6 +46,14 @@ import { merchantUpdateMyStoreApi, MerchantUser } from '../../services/api';
 
 const AVAILABLE_PAGE_SECTIONS = [
   {
+    id: 'hero',
+    title: 'Hero (Banner Principal & Identidade)',
+    description: 'Capa da loja, título principal, foto de fundo, avaliação, endereço e botões de ação.',
+    icon: StoreIcon,
+    color: 'from-[#0B3B60] to-blue-700',
+    category: 'Apresentação Principal',
+  },
+  {
     id: 'offer',
     title: 'Oferta Promocional & Cupom',
     description: 'Banner de oferta especial com porcentagem e código de cupom com clique para copiar.',
@@ -910,10 +918,33 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
             {/* SEÇÃO 1: GERAL & HERO */}
             {activeConfigSection === 'geral' && (
               <div className="bg-white rounded-3xl p-6 sm:p-7 shadow-xs border border-slate-200/80 space-y-6">
-                <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2 pb-3 border-b border-slate-100">
-                  <StoreIcon className="w-5 h-5 text-[#F26522]" />
-                  <span>Identidade, Hero & Canais de Atendimento</span>
-                </h2>
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                  <h2 className="text-lg font-bold text-[#0B3B60] flex items-center gap-2">
+                    <StoreIcon className="w-5 h-5 text-[#F26522]" />
+                    <span>Identidade, Hero & Canais de Atendimento</span>
+                  </h2>
+                  <button
+                    type="button"
+                    onClick={() => toggleSectionVisibility('hero')}
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer shadow-xs self-start sm:self-auto ${
+                      isSectionVisible('hero')
+                        ? 'bg-emerald-500 text-white hover:bg-emerald-600'
+                        : 'bg-slate-200 text-slate-600 hover:bg-slate-300'
+                    }`}
+                  >
+                    {isSectionVisible('hero') ? (
+                      <>
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>Hero Exibido na Página</span>
+                      </>
+                    ) : (
+                      <>
+                        <EyeOff className="w-3.5 h-3.5" />
+                        <span>Hero Oculto na Página</span>
+                      </>
+                    )}
+                  </button>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="sm:col-span-2">
