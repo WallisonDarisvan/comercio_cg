@@ -140,3 +140,4 @@ function estimateBase64SizeBytes(dataUrl: string): number {
   const padding = (base64Str.endsWith('==') ? 2 : base64Str.endsWith('=') ? 1 : 0);
   return Math.floor((base64Str.length * 3) / 4) - padding;
 }
+

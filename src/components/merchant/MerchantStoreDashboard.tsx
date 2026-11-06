@@ -717,12 +717,12 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
         {activeTab === 'configuracoes' && (
           <form onSubmit={handleSave} className="space-y-6 animate-in fade-in duration-200">
             
-            {/* Sub-navigation bar across all customizable page sections */}
-            <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-slate-200 no-scrollbar">
+            {/* Sub-navigation bar across all customizable page sections (Quebra em duas linhas para exibir todos os botões) */}
+            <div className="flex flex-wrap items-center gap-2 pb-3 border-b border-slate-200">
               <button
                 type="button"
                 onClick={() => setActiveConfigSection('secoes')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeConfigSection === 'secoes'
                     ? 'bg-[#0B3B60] text-white shadow-xs'
                     : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -740,7 +740,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveConfigSection('geral')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeConfigSection === 'geral'
                     ? 'bg-[#0B3B60] text-white shadow-xs'
                     : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -753,7 +753,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveConfigSection('sobre')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeConfigSection === 'sobre'
                     ? 'bg-[#0B3B60] text-white shadow-xs'
                     : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -766,7 +766,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveConfigSection('produtos')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeConfigSection === 'produtos'
                     ? 'bg-[#0B3B60] text-white shadow-xs'
                     : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -779,7 +779,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveConfigSection('faq')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeConfigSection === 'faq'
                     ? 'bg-[#0B3B60] text-white shadow-xs'
                     : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -792,7 +792,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveConfigSection('avaliacoes')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeConfigSection === 'avaliacoes'
                     ? 'bg-[#0B3B60] text-white shadow-xs'
                     : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
@@ -805,7 +805,7 @@ export const MerchantStoreDashboard: React.FC<MerchantStoreDashboardProps> = ({
               <button
                 type="button"
                 onClick={() => setActiveConfigSection('galeria')}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeConfigSection === 'galeria'
                     ? 'bg-[#0B3B60] text-white shadow-xs'
                     : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
