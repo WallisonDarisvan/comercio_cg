@@ -60,6 +60,7 @@ export const CATEGORIES: Category[] = [
   { id: 'saude', name: 'Saúde & Óticas', iconName: 'Glasses', count: 6, color: 'text-emerald-600 bg-emerald-50' },
   { id: 'automotivo', name: 'Serviços Automotivos', iconName: 'Car', count: 5, color: 'text-orange-600 bg-orange-50' },
   { id: 'construcao', name: 'Construção & Lar', iconName: 'Hammer', count: 4, color: 'text-indigo-600 bg-indigo-50' },
+  { id: 'outros', name: 'Outros', iconName: 'MoreHorizontal', count: 3, color: 'text-slate-600 bg-slate-50' },
 ];
 
 export const NEIGHBORHOODS = [
@@ -213,6 +214,29 @@ export const STORES_DATA: Store[] = [
     isVerifiedTv: true,
     openingHours: 'Segunda a Sexta: 07:30 às 18:00 | Sábado: 07:30 às 13:00',
     website: 'https://casaborborema.com.br',
+  },
+  {
+    id: 'livraria-papelaria-campina',
+    name: 'Livraria & Papelaria Central CG',
+    category: 'Outros',
+    categoryId: 'outros',
+    image: '/src/assets/images/campina_tech_store_1793926202240.jpg',
+    tagTv: '⭐ Papelaria & Livros',
+    description: 'Livros didáticos, materiais escolares, artigos de escritório e presentes criativos com atendimento personalizado no Centro.',
+    offer: '10% de desconto em materiais escolares e mochilas com o cupom do portal.',
+    rating: 4.8,
+    reviewsCount: 142,
+    neighborhood: 'Centro',
+    address: 'Rua Venâncio Neiva, 150 - Centro, Campina Grande - PB',
+    phone: '(83) 3321-9870',
+    whatsapp: '5583996557890',
+    instagram: '@livrariacentralcg',
+    featuredInShow: 'Destaque Papelaria & Livros',
+    discountCoupon: 'CENTRAL10',
+    highlights: ['Lista escolar completa', 'Impressões e encadernações', 'Artigos de escritório e informática'],
+    isVerifiedTv: true,
+    openingHours: 'Segunda a Sexta: 08:00 às 18:00 | Sábado: 08:00 às 12:30',
+    website: 'https://livrariacentralcg.com.br',
   },
 ];
 

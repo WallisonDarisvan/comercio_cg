@@ -10,6 +10,7 @@ import {
   Car,
   Hammer,
   Store,
+  MoreHorizontal,
 } from 'lucide-react';
 import { CATEGORIES, NEIGHBORHOODS, Category } from '../data/mockData';
 
@@ -51,6 +52,8 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
         return <Car className={iconClass} />;
       case 'Hammer':
         return <Hammer className={iconClass} />;
+      case 'MoreHorizontal':
+        return <MoreHorizontal className={iconClass} />;
       default:
         return <Store className={iconClass} />;
     }

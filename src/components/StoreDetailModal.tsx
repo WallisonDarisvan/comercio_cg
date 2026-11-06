@@ -52,13 +52,13 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 overflow-y-auto bg-black/60 backdrop-blur-xs flex flex-col justify-end sm:justify-center items-center p-0 sm:p-4 animate-in fade-in duration-200">
-      
+
       {/* Click outside to close backdrop */}
       <div className="fixed inset-0" onClick={onClose} />
 
       {/* Modal Dialog Content (Bottom Sheet on Mobile, Centered Card on Desktop) */}
       <div className="relative bg-white rounded-t-3xl sm:rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden z-10 max-h-[90vh] flex flex-col mt-auto sm:my-auto">
-        
+
         {/* Mobile Drag Handle */}
         <div className="sm:hidden absolute top-2 left-1/2 -translate-x-1/2 z-20 w-10 h-1.5 bg-white/70 rounded-full pointer-events-none" />
 
@@ -107,7 +107,7 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
 
         {/* Scrollable Body */}
         <div className="p-4 sm:p-6 overflow-y-auto space-y-5 text-slate-700">
-          
+
           {/* Quick Metrics */}
           <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-2xl bg-slate-50 border border-slate-200/80 text-xs">
             <div className="flex items-center gap-2">
@@ -154,11 +154,10 @@ export const StoreDetailModal: React.FC<StoreDetailModalProps> = ({
                 </div>
                 <button
                   onClick={() => handleCopyCoupon(store.discountCoupon!)}
-                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[38px] ${
-                    copiedCoupon
+                  className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all min-h-[38px] ${copiedCoupon
                       ? 'bg-emerald-600 text-white'
                       : 'bg-amber-500 hover:bg-amber-600 text-white'
-                  }`}
+                    }`}
                 >
                   {copiedCoupon ? (
                     <>
