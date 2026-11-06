@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, LogIn, Store } from 'lucide-react';
+import { Menu, LogIn, Store, LogOut } from 'lucide-react';
 
 interface HeaderProps {
   onOpenMenu: () => void;
@@ -7,6 +7,7 @@ interface HeaderProps {
   isMerchantLoggedIn?: boolean;
   merchantStoreName?: string;
   onOpenMerchantDashboard?: () => void;
+  onLogout?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -15,6 +16,7 @@ export const Header: React.FC<HeaderProps> = ({
   isMerchantLoggedIn = false,
   merchantStoreName,
   onOpenMerchantDashboard,
+  onLogout,
 }) => {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
@@ -48,18 +50,29 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Right Control: Login / Painel Exclusivo do Comerciante */}
-        <div className="flex items-center">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {isMerchantLoggedIn ? (
-            <button
-              onClick={onOpenMerchantDashboard}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-[#0B3B60] bg-amber-50 border border-amber-300/80 hover:bg-amber-100 active:scale-95 rounded-xl shadow-xs transition-all min-h-[40px] sm:min-h-[44px] cursor-pointer"
-              title="Abrir o painel exclusivo da minha loja"
-            >
-              <Store className="w-4 h-4 shrink-0 text-[#F26522]" />
-              <span className="truncate max-w-[120px] sm:max-w-[170px]">
-                {merchantStoreName || 'Minha Loja'}
-              </span>
-            </button>
+            <>
+              <button
+                onClick={onOpenMerchantDashboard}
+                className="flex items-center gap-2 px-3 sm:px-4 py-2 text-xs sm:text-sm font-bold text-[#0B3B60] bg-amber-50 border border-amber-300/80 hover:bg-amber-100 active:scale-95 rounded-xl shadow-xs transition-all min-h-[40px] sm:min-h-[44px] cursor-pointer"
+                title="Abrir o painel exclusivo da minha loja"
+              >
+                <Store className="w-4 h-4 shrink-0 text-[#F26522]" />
+                <span className="truncate max-w-[120px] sm:max-w-[170px]">
+                  {merchantStoreName || 'Minha Loja'}
+                </span>
+              </button>
+
+              <button
+                onClick={onLogout}
+                className="p-2 sm:px-2.5 sm:py-2 text-slate-500 hover:text-red-600 bg-slate-100 hover:bg-red-50 border border-slate-200/80 hover:border-red-200 active:scale-95 rounded-xl transition-all min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] flex items-center justify-center cursor-pointer"
+                title="Sair da conta"
+                aria-label="Sair da conta do lojista"
+              >
+                <LogOut className="w-4 h-4 text-slate-500 hover:text-red-600" />
+              </button>
+            </>
           ) : (
             <button
               onClick={onOpenMerchantAuth}

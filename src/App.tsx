@@ -376,6 +376,7 @@ export default function App() {
           'Minha Loja'
         }
         onOpenMerchantDashboard={handleOpenMerchantDashboard}
+        onLogout={handleMerchantLogout}
       />
 
       {/* Main Content Area */}
