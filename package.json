@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port=3000 --host=0.0.0.0",
-    "server": "tsx server/index.ts",
-    "start": "tsx server/index.ts",
-    "build": "vite build",
+    "server": "npx tsx server/index.ts",
+    "build:server": "esbuild server/index.ts --platform=node --format=esm --packages=external --outfile=dist-server/index.js",
+    "build": "vite build && esbuild server/index.ts --platform=node --format=esm --packages=external --outfile=dist-server/index.js",
+    "start": "node dist-server/index.js",
     "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
+    "clean": "rm -rf dist dist-server",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
