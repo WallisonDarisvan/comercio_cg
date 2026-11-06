@@ -245,6 +245,26 @@ export default function App() {
     }
   };
 
+  const handleOpenMerchantDashboard = () => {
+    setSelectedStore(null);
+    setIsAdminOpen(false);
+
+    if (merchantUser) {
+      const activeStore =
+        merchantStore ||
+        stores.find((s) => s.id === merchantUser.storeId) ||
+        stores[0];
+      if (activeStore) {
+        setMerchantStore(activeStore);
+        localStorage.setItem('comercio_cg_merchant_store', JSON.stringify(activeStore));
+      }
+      setIsMerchantDashboardOpen(true);
+    } else {
+      setIsMerchantAuthOpen(true);
+    }
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
+
   // Filtered stores computation
   const filteredStores = useMemo(() => {
     return stores.filter((store) => {
@@ -301,17 +321,31 @@ export default function App() {
   }
 
   // Painel Exclusivo do Lojista (Controle apenas da sua loja)
-  if (isMerchantDashboardOpen && merchantUser && merchantStore) {
-    return (
-      <MerchantStoreDashboard
-        merchant={merchantUser}
-        store={merchantStore}
-        onUpdateStore={handleUpdateMerchantStore}
-        onViewMyStorePage={handleViewMyStorePage}
-        onBackToPortal={() => setIsMerchantDashboardOpen(false)}
-        onLogout={handleMerchantLogout}
-      />
-    );
+  if (isMerchantDashboardOpen && merchantUser) {
+    const activeStore =
+      merchantStore ||
+      stores.find((s) => s.id === merchantUser.storeId) ||
+      stores[0];
+
+    if (activeStore) {
+      return (
+        <MerchantStoreDashboard
+          merchant={merchantUser}
+          store={activeStore}
+          onUpdateStore={handleUpdateMerchantStore}
+          onViewMyStorePage={() => {
+            setSelectedStore(activeStore);
+            setIsMerchantDashboardOpen(false);
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }}
+          onBackToPortal={() => {
+            setIsMerchantDashboardOpen(false);
+            window.scrollTo({ top: 0, behavior: 'instant' });
+          }}
+          onLogout={handleMerchantLogout}
+        />
+      );
+    }
   }
 
   // If an establishment is selected, display its dedicated website view (not a modal)
@@ -336,8 +370,12 @@ export default function App() {
         onOpenMenu={() => setIsMenuOpen(true)}
         onOpenMerchantAuth={() => setIsMerchantAuthOpen(true)}
         isMerchantLoggedIn={!!merchantUser}
-        merchantStoreName={merchantStore?.name}
-        onOpenMerchantDashboard={() => setIsMerchantDashboardOpen(true)}
+        merchantStoreName={
+          merchantStore?.name ||
+          stores.find((s) => s.id === merchantUser?.storeId)?.name ||
+          'Minha Loja'
+        }
+        onOpenMerchantDashboard={handleOpenMerchantDashboard}
       />
 
       {/* Main Content Area */}
@@ -406,7 +444,7 @@ export default function App() {
         onOpenAdmin={() => setIsAdminOpen(true)}
         isMerchantLoggedIn={!!merchantUser}
         onOpenMerchantAuth={() => setIsMerchantAuthOpen(true)}
-        onOpenMerchantDashboard={() => setIsMerchantDashboardOpen(true)}
+        onOpenMerchantDashboard={handleOpenMerchantDashboard}
       />
 
       {/* Modal de Autenticação / Cadastro Exclusivo do Lojista */}
