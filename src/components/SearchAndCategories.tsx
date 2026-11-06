@@ -130,12 +130,12 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
           </div>
         </div>
 
-        {/* Categories Horizontal Carousel */}
+        {/* Categories (4 on top and 4 on bottom on mobile; flex row on desktop) */}
         <div className="relative">
           {/* Categories with Prominent Neutral Icons */}
           <div
             ref={carouselRef}
-            className="flex items-start justify-start sm:justify-center gap-2.5 sm:gap-4 overflow-x-auto no-scrollbar py-2 px-1 scroll-smooth snap-x snap-proximity touch-pan-x overscroll-x-contain"
+            className="grid grid-cols-4 sm:flex sm:items-start sm:justify-center gap-2 sm:gap-4 py-2 px-1"
           >
             {CATEGORIES.map((cat: Category) => {
               const isActive = selectedCategory === cat.id;
@@ -143,11 +143,11 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
                 <button
                   key={cat.id}
                   onClick={() => onSelectCategory(cat.id)}
-                  className="group flex flex-col items-center gap-1.5 sm:gap-2 shrink-0 cursor-pointer snap-start active:scale-95 transition-all text-center focus:outline-none w-[74px] sm:w-24"
+                  className="group flex flex-col items-center gap-1 sm:gap-2 cursor-pointer active:scale-95 transition-all text-center focus:outline-none w-full sm:w-24"
                 >
                   {/* Prominent Neutral Icon Box */}
                   <div
-                    className={`w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-200 ${
+                    className={`w-13 h-13 xs:w-14 xs:h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-200 ${
                       isActive
                         ? 'bg-[#0B3B60] text-white shadow-md shadow-[#0B3B60]/25 ring-2 ring-[#0B3B60]/20 scale-105'
                         : 'bg-slate-100/90 text-slate-700 border border-slate-200/80 hover:bg-slate-200/80 hover:text-slate-900 hover:border-slate-300'
@@ -157,9 +157,9 @@ export const SearchAndCategories: React.FC<SearchAndCategoriesProps> = ({
                   </div>
 
                   {/* Category Title */}
-                  <div className="flex flex-col items-center min-h-[32px] justify-start">
+                  <div className="flex flex-col items-center min-h-[28px] sm:min-h-[32px] justify-start">
                     <span
-                      className={`text-[11px] sm:text-xs leading-tight transition-colors line-clamp-2 px-0.5 ${
+                      className={`text-[10px] xs:text-[11px] sm:text-xs leading-tight transition-colors line-clamp-2 px-0.5 ${
                         isActive
                           ? 'text-[#0B3B60] font-bold'
                           : 'text-slate-600 group-hover:text-slate-900 font-medium'
